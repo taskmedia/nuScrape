@@ -2,7 +2,9 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strconv"
 
@@ -43,7 +45,27 @@ func getGesamtspielplanChampionshipGroup(c *gin.Context) {
 		return
 	}
 
+	url := generateGesamtspielplanUrl(year, championship, group)
+
+	log.WithField("url", url).Info("Scraping URL")
+
 	c.String(http.StatusOK, "not yet implemented")
+}
+
+func generateGesamtspielplanUrl(year int, championship string, group int) url.URL {
+	u := url.URL{}
+	u.Scheme = "https"
+	u.Host = "bhv-handball.liga.nu"
+	u.Path = "/cgi-bin/WebObjects/nuLigaHBDE.woa/wa/groupPage"
+
+	query := url.Values{}
+	query.Add("displayTyp", "gesamt")
+	query.Add("displayDetail", "meetings")
+	query.Add("championship", championship+" "+getYearFormatted(year))
+	query.Add("group", strconv.Itoa(group))
+	u.RawQuery = query.Encode()
+
+	return u
 }
 
 // Get and validate year
@@ -70,6 +92,12 @@ func getYear(yearString string) (int, error) {
 	}
 
 	return y, nil
+}
+
+// Return the year to nuLiga URL
+func getYearFormatted(y int) string {
+	yearString := strconv.Itoa(y)
+	return fmt.Sprintf("%s/%s", yearString[:4], yearString[4:])
 }
 
 // Check if the championship abbreviation is valid
