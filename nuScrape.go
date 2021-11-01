@@ -16,15 +16,22 @@ func main() {
 	log.Info("Starting nuScrape")
 
 	router := gin.Default()
-	router.GET("/gesamtspielplan/:championship/:group", getGesamtspielplanChampionshipGroup)
+	router.GET("/gesamtspielplan/:year/:championship/:group", getGesamtspielplanChampionshipGroup)
 
 	router.Run("localhost:8080")
 }
 
 func getGesamtspielplanChampionshipGroup(c *gin.Context) {
+	year := c.Param("year")
+	if !validateYear(year) {
+		log.WithField("year", year).Warning("year not matching with regex")
+		c.String(http.StatusBadRequest, "year pattern not valid - please use YYYYYY")
+		return
+	}
+
 	championship := c.Param("championship")
 	if !validateChampionshipAbb(championship) {
-		log.WithField("championship", championship).Warning("championship not matching with regex")
+		log.WithField("championship", championship).Warning("championship not matching with list")
 		c.String(http.StatusBadRequest, "championship pattern not valid")
 		return
 	}
@@ -39,13 +46,26 @@ func getGesamtspielplanChampionshipGroup(c *gin.Context) {
 	c.String(http.StatusOK, "not yet implemented")
 }
 
+func validateYear(y string) bool {
+	return regexp.MustCompile(`\d{6}`).MatchString(y)
+}
+
 // Check if the championship abbreviation is valid
 func validateChampionshipAbb(c string) bool {
-	CHAMPIONSHIP_REGEX := `(BHV|UF|OF|MF|OS|SW|AB|AV|OB)\\s(\\d{4}\\/\\d{2})`
-
-	re := regexp.MustCompile(CHAMPIONSHIP_REGEX)
-
-	return re.MatchString(c)
+	switch c {
+	case
+		"BHV",
+		"UF",
+		"OF",
+		"MF",
+		"OS",
+		"SW",
+		"AB",
+		"AV",
+		"OB":
+		return true
+	}
+	return false
 }
 
 // Get and validate group
