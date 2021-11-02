@@ -4,7 +4,7 @@ documentation:
 
 # add 'test' label to any changes related to go test
 test:
-  - "*_test.go"
+  - "**/*_test.go"
 
 # add 'docker' label to any changes related to docker
 docker:
