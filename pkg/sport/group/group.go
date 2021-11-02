@@ -24,5 +24,5 @@ func New(groupString string) (Group, error) {
 
 // String converts a Group to a string
 func (g Group) String() string {
-	return string(g)
+	return strconv.Itoa(int(g))
 }
