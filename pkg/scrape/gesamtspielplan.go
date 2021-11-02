@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
+	. "github.com/taskmedia/nuScrape/pkg/sport"
 	. "github.com/taskmedia/nuScrape/pkg/sport/group"
 	. "github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
 // GenerateGesamtspielplan will scrape and generate Matches for a given group
-func GenerateGesamtspielplan(s Season, c string, g Group) {
+func GenerateGesamtspielplan(s Season, c string, g Group) Matches {
 	log.WithFields(
 		log.Fields{
 			"season":       s,
@@ -22,4 +23,6 @@ func GenerateGesamtspielplan(s Season, c string, g Group) {
 
 	// testing url
 	fmt.Println(url.String())
+
+	return nil
 }
