@@ -3,12 +3,12 @@ package scrape
 import (
 	"net/url"
 
-	. "github.com/taskmedia/nuScrape/pkg/sport/group"
-	. "github.com/taskmedia/nuScrape/pkg/sport/season"
+	"github.com/taskmedia/nuScrape/pkg/sport/group"
+	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
 // generateUrlGesamtspielplan will generate a URL for scrapping gesamtspielplan
-func generateUrlGesamtspielplan(s Season, c string, g Group) url.URL {
+func generateUrlGesamtspielplan(s season.Season, c string, g group.Group) url.URL {
 	u := url.URL{}
 	u.Scheme = "https"
 	u.Host = "bhv-handball.liga.nu"
