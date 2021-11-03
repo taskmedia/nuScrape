@@ -1,16 +1,15 @@
 package scrape
 
 import (
-	"fmt"
-
 	log "github.com/sirupsen/logrus"
+	"github.com/taskmedia/nuScrape/pkg/parser"
 	"github.com/taskmedia/nuScrape/pkg/sport"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
 // GenerateGesamtspielplan will scrape and generate Matches for a given group
-func GenerateGesamtspielplan(s season.Season, c string, g group.Group) sport.Matches {
+func GenerateGesamtspielplan(s season.Season, c string, g group.Group) (sport.Matches, error) {
 	log.WithFields(
 		log.Fields{
 			"season":       s,
@@ -21,8 +20,14 @@ func GenerateGesamtspielplan(s season.Season, c string, g group.Group) sport.Mat
 
 	url := generateUrlGesamtspielplan(s, c, g)
 
-	// testing url
-	fmt.Println(url.String())
+	// scrape website
+	html_scrape, err := scrapeTableResultset(url)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil
+	// parse website content to Matches
+	parser.ParseGesamtspielplan(html_scrape)
+
+	return nil, nil
 }
