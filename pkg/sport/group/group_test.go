@@ -14,5 +14,4 @@ func TestString(t *testing.T) {
 	g, _ := New(expected)
 
 	assert.Equal(t, expected, g.String(), "Expect a string as return from method")
-
 }
