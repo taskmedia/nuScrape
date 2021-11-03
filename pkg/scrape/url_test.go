@@ -17,7 +17,6 @@ func TestGenerateUrlGesamtspielplan(t *testing.T) {
 	s, _ := season.New("2021_22")
 	c := "AV"
 	g, _ := group.New("281103")
-	// , c string, g Group)
 
 	u := generateUrlGesamtspielplan(s, c, g)
 
