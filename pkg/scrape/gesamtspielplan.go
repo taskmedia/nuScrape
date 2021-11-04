@@ -1,16 +1,14 @@
 package scrape
 
 import (
-	"fmt"
-
+	"github.com/gocolly/colly"
 	log "github.com/sirupsen/logrus"
-	"github.com/taskmedia/nuScrape/pkg/sport"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
 // GenerateGesamtspielplan will scrape and generate Matches for a given group
-func GenerateGesamtspielplan(s season.Season, c string, g group.Group) sport.Matches {
+func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (colly.HTMLElement, error) {
 	log.WithFields(
 		log.Fields{
 			"season":       s,
@@ -21,8 +19,6 @@ func GenerateGesamtspielplan(s season.Season, c string, g group.Group) sport.Mat
 
 	url := generateUrlGesamtspielplan(s, c, g)
 
-	// testing url
-	fmt.Println(url.String())
-
-	return nil
+	// scrape and return table result-set
+	return scrape(url, "table.result-set")
 }
