@@ -1,10 +1,12 @@
 package rest
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"github.com/taskmedia/nuScrape/pkg/parser"
 	"github.com/taskmedia/nuScrape/pkg/scrape"
 	"github.com/taskmedia/nuScrape/pkg/sport"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
@@ -44,7 +46,29 @@ func AddRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		// get data from scrapper
-		scrape.GenerateGesamtspielplan(season, championship, group)
+		html_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
+		if err != nil {
+			log.WithFields(
+				log.Fields{
+					"season":       season,
+					"championship": championship,
+					"group":        group,
+				},
+			).Warning(err)
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// parse website content to Matches
+		matches, err := parser.ParseGesamtspielplan(html_scrape)
+		if err != nil {
+			log.Warning("parsing of gesamtspielplan failed")
+			c.String(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		// test
+		fmt.Println(matches)
 
 		// return data
 		c.String(http.StatusOK, "not yet implemented")

@@ -9,7 +9,7 @@ import (
 )
 
 // scrapeTableResultset will scrape the requested website and searches for table.result-set object
-func scrapeTableResultset(u url.URL) (colly.HTMLElement, error) {
+func scrape(u url.URL, htmlElement string) (colly.HTMLElement, error) {
 	var content colly.HTMLElement
 	var return_error error
 
@@ -21,7 +21,7 @@ func scrapeTableResultset(u url.URL) (colly.HTMLElement, error) {
 		log.WithField("url", u).Debug("scraping url")
 	})
 
-	c.OnHTML("table.result-set", func(e *colly.HTMLElement) {
+	c.OnHTML(htmlElement, func(e *colly.HTMLElement) {
 		content = *e
 	})
 
