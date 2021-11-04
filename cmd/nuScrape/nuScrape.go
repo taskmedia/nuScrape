@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/taskmedia/nuScrape/pkg/http/rest"
 )
@@ -12,7 +11,6 @@ func init() {
 }
 
 func main() {
-	router := gin.Default()
-	rest.AddRouterGesamtspielplan(router)
+	router := rest.SetupRouter()
 	router.Run("localhost:8080")
 }

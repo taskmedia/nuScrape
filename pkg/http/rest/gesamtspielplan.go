@@ -14,7 +14,7 @@ import (
 // AddRouterGesamtspielplan will add a GET request to receive a gesamtspielplan for the added engine.
 // It validates the parameters and uses a website scrapper to generate the gesamtspielplan.
 // The REST endpoint will requre three parameters: season, championship and group.
-func AddRouterGesamtspielplan(engine *gin.Engine) {
+func addRouterGesamtspielplan(engine *gin.Engine) {
 	engine.GET("/rest/v1/gesamtspielplan/:season/:championship/:group", func(c *gin.Context) {
 		// get rest parameters
 		param_season := c.Param("season")
