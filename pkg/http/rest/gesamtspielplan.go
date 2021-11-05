@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -67,10 +67,14 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 			return
 		}
 
-		// test
-		fmt.Println(matches)
-
-		// return data
-		c.String(http.StatusOK, "not yet implemented")
+		// return matches as JSON
+		c.Writer.Header().Set("Content-Type", "application/json")
+		wr, err := json.Marshal(matches)
+		if err != nil {
+			log.Warning("could not parse matches to JSON")
+			c.String(http.StatusInternalServerError, err.Error())
+			return
+		}
+		c.Writer.Write(wr)
 	})
 }
