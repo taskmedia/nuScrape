@@ -1,7 +1,6 @@
 package sport
 
 import (
-	"net/url"
 	"time"
 )
 
@@ -29,7 +28,7 @@ type Match struct {
 	Annotation matchAnnotation `json:"annotation"`
 
 	// MatchReport represents the URL to the PDF file containing the report of a match
-	Report url.URL `json:"report"`
+	ReportId int `json:"report"`
 
 	// Referee represents a slice of strings containing each referee related to the match
 	Referee []string `json:"referee"`
