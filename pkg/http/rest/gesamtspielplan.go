@@ -62,8 +62,13 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		// parse website content to Matches
 		matches, err := parser.ParseGesamtspielplan(html_scrape)
 		if err != nil {
-			log.Warning("parsing of gesamtspielplan failed")
-			c.String(http.StatusInternalServerError, err.Error())
+			err_msg := "parsing of gesamtspielplan failed"
+			log.WithFields(log.Fields{
+				"html_scrape": html_scrape,
+				"matches":     matches,
+				"error":       err,
+			}).Warning(err_msg)
+			c.String(http.StatusInternalServerError, err_msg)
 			return
 		}
 
@@ -71,8 +76,12 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		c.Writer.Header().Set("Content-Type", "application/json")
 		wr, err := json.Marshal(matches)
 		if err != nil {
-			log.Warning("could not parse matches to JSON")
-			c.String(http.StatusInternalServerError, err.Error())
+			err_msg := "could not parse matches to JSON"
+			log.WithFields(log.Fields{
+				"matches": matches,
+				"error":   err,
+			}).Warning(err_msg)
+			c.String(http.StatusInternalServerError, err_msg)
 			return
 		}
 		c.Writer.Write(wr)
