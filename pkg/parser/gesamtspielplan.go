@@ -64,11 +64,10 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 			case 3:
 				location, err := strconv.Atoi(t)
 				if err != nil {
-					log.WithFields(
-						log.Fields{
-							"locationId": t,
-							"error":      err,
-						}).Warning("can not parse location ID")
+					log.WithFields(log.Fields{
+						"locationId": t,
+						"error":      err,
+					}).Warning("can not parse location ID")
 				} else {
 					m.LocationId = location
 				}
@@ -77,11 +76,10 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 			case 4:
 				game, err := strconv.Atoi(t)
 				if err != nil {
-					log.WithFields(
-						log.Fields{
-							"gameId": t,
-							"error":  err,
-						}).Warning("can not parse game ID")
+					log.WithFields(log.Fields{
+						"gameId": t,
+						"error":  err,
+					}).Warning("can not parse game ID")
 				} else {
 					m.LocationId = game
 				}
@@ -98,14 +96,13 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 			case 7:
 				goalsHome, goalsGuest, annotation, referee, err := parseResult(t, td)
 				if err != nil {
-					log.WithFields(
-						log.Fields{
-							"goalsHome":  goalsHome,
-							"goalsGuest": goalsGuest,
-							"annotation": annotation,
-							"referee":    referee,
-							"err":        err,
-						}).Warning("can not parse result")
+					log.WithFields(log.Fields{
+						"goalsHome":  goalsHome,
+						"goalsGuest": goalsGuest,
+						"annotation": annotation,
+						"referee":    referee,
+						"err":        err,
+					}).Warning("can not parse result")
 				} else {
 					m.Goal.Home = goalsHome
 					m.Goal.Guest = goalsGuest

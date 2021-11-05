@@ -9,12 +9,11 @@ import (
 
 // GenerateGesamtspielplan will scrape and generate Matches for a given group
 func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (colly.HTMLElement, error) {
-	log.WithFields(
-		log.Fields{
-			"season":       s,
-			"championship": c,
-			"group":        g,
-		},
+	log.WithFields(log.Fields{
+		"season":       s,
+		"championship": c,
+		"group":        g,
+	},
 	).Debug("generating new gesamtspielplan")
 
 	url := generateUrlGesamtspielplan(s, c, g)
