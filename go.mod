@@ -3,6 +3,7 @@ module github.com/taskmedia/nuScrape
 go 1.17
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/gin-gonic/gin v1.7.4
 	github.com/gocolly/colly v1.2.0
 	github.com/sirupsen/logrus v1.8.1
@@ -10,7 +11,6 @@ require (
 )
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/antchfx/htmlquery v1.2.4 // indirect
 	github.com/antchfx/xmlquery v1.3.8 // indirect
