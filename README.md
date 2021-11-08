@@ -11,6 +11,8 @@
 [![pull requests](https://img.shields.io/github/issues-pr/taskmedia/nuScrape?style=flat-square)](https://github.com/taskmedia/nuScrape/pulls)
 <br />
 [![twitter](https://img.shields.io/twitter/follow/taskmediaDE?style=social)](https://twitter.com/taskmediaDE)
+<br />
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/taskmedia/nuScrape)
 
 This application will generate a REST endpoint to fetch data from [nuLiga](https://bhv-handball.liga.nu/).
 The service will parse the table of nuLiga to a JSON object.
