@@ -81,7 +81,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 						"error":  err,
 					}).Warning("can not parse game ID")
 				} else {
-					m.LocationId = game
+					m.Id = game
 				}
 
 			// hometeam
