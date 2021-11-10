@@ -25,7 +25,7 @@ You will be able to start the application directly with golang:
 go run cmd/nuScrape/nuScrape.go
 ```
 
-Another option would be running the application in a Docker container:
+Another option would be running the application in a [Docker container](https://hub.docker.com/r/taskmedia/nuscrape):
 
 ```bash
 docker run \
