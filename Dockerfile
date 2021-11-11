@@ -1,9 +1,14 @@
 FROM golang:alpine AS build
 
+ARG RELEASE_VERSION="dev"
+ARG RELEASE_GIT_COMMIT="build"
+
 WORKDIR /build
 COPY . /build
 
-RUN go build cmd/nuScrape/nuScrape.go
+RUN go build \
+  -ldflags "-X main.version=${RELEASE_VERSION}-${RELEASE_GIT_COMMIT}" \
+  cmd/nuScrape/nuScrape.go
 
 FROM alpine
 

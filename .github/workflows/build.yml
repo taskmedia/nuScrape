@@ -31,3 +31,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args:
+            RELEASE_VERSION: ${{ steps.meta.outputs.version }}
+            RELEASE_GIT_COMMIT: ${{ GITHUB_SHA }}
