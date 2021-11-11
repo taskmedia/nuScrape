@@ -33,4 +33,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             RELEASE_VERSION=${{ steps.meta.outputs.version }}
-            RELEASE_GIT_COMMIT=${{ GITHUB_SHA }}
+            RELEASE_GIT_COMMIT=${{ github.sha }}
