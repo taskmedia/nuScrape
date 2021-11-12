@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nuscrape-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: k8s-local
+      http:
+        paths:
+          - path: /nuscrape(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: nuscrape-service
+                port:
+                  number: 80

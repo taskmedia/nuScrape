@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nuscrape-deployment
+  labels:
+    app: nuscrape
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nuscrape
+  template:
+    metadata:
+      labels:
+        app: nuscrape
+    spec:
+      containers:
+        - name: nuscrape
+          image: taskmedia/nuscrape:latest
+          ports:
+            - containerPort: 8080
