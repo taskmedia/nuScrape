@@ -7,7 +7,7 @@ WORKDIR /build
 COPY . /build
 
 RUN go build \
-  -ldflags "-X main.version=${RELEASE_VERSION}-${RELEASE_GIT_COMMIT}" \
+  -ldflags "-X github.com/taskmedia/nuScrape/pkg/http/rest.version=${RELEASE_VERSION}-${RELEASE_GIT_COMMIT}" \
   cmd/nuScrape/nuScrape.go
 
 FROM alpine
