@@ -32,6 +32,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 		}
 
 		m := sport.Match{}
+		dateNotAvailable := 0
 
 		// loop through the columns of the table
 		tr.Find("td").Each(func(td_i int, td *goquery.Selection) {
@@ -40,18 +41,26 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 			// switch through the column elements
 			// each column must be considered and parsed separately
 			switch td_i {
+			case 0:
+				// if no date is set in column 0 Termin offen will be set
+				// the column span will be two - because of this the columns would not match anymore
+				if t == "Termin offen" {
+					dateNotAvailable = -1
+					return
+				}
+
 			// date
-			case 1:
+			case 1 + dateNotAvailable:
 				if t != "" {
-					// date has to be cached because not every column will have a date field
-					// the date will be parsed together with the time
 					cachedDate = t
 				}
 
 			// time
-			case 2:
+			case 2 + dateNotAvailable:
 				match := regexp.MustCompile(`\d{2}:\d{2}`).FindStringSubmatch(t)
-				m.Date = parseGermanTime(cachedDate, match[0])
+				if len(match) > 1 {
+					m.Date = parseGermanTime(cachedDate, match[0])
+				}
 
 				// check if date annotation is available
 				// this happens when e.g. a game has been postponed
@@ -61,7 +70,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 				}
 
 			// location ID
-			case 3:
+			case 3 + dateNotAvailable:
 				location, err := strconv.Atoi(t)
 				if err != nil {
 					log.WithFields(log.Fields{
@@ -73,7 +82,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 				}
 
 			// game ID
-			case 4:
+			case 4 + dateNotAvailable:
 				game, err := strconv.Atoi(t)
 				if err != nil {
 					log.WithFields(log.Fields{
@@ -85,15 +94,15 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 				}
 
 			// hometeam
-			case 5:
+			case 5 + dateNotAvailable:
 				m.Team.Home = t
 
 			// guestteam
-			case 6:
+			case 6 + dateNotAvailable:
 				m.Team.Guest = t
 
 			// result / result annotation / referee
-			case 7:
+			case 7 + dateNotAvailable:
 				goalsHome, goalsGuest, annotation, referee, err := parseResult(t, td)
 				if err != nil {
 					log.WithFields(log.Fields{
