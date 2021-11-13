@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 )
@@ -9,7 +10,14 @@ import (
 // Testing different responses of REST endpoints
 func TestAddRouterGesamtspielplan(t *testing.T) {
 	// 200 - OK
-	checkEndpointGetStatuscode(t, "/rest/v1/gesamtspielplan/2021_22/AV/281103", http.StatusOK)
+	testGroups := []map[string]string{
+		{"season": "2021_22", "championship": "AV", "group": "281103"},
+	}
+
+	for _, g := range testGroups {
+		url := fmt.Sprintf("/rest/v1/gesamtspielplan/%s/%s/%s", g["season"], g["championship"], g["group"])
+		checkEndpointGetStatuscode(t, url, http.StatusOK)
+	}
 
 	// 400 - Bad Request
 	checkEndpointGetStatuscode(t, "/rest/v1/gesamtspielplan/2021_TS/AV/281103", http.StatusBadRequest)
