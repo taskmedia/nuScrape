@@ -19,3 +19,9 @@ func checkEndpointGetStatuscode(t *testing.T, httpEndpoint string, expectedHttpS
 
 	assert.Equal(t, expectedHttpStatuscode, w.Code)
 }
+
+// Test version HTTP endpoint
+func TestVersion(t *testing.T) {
+	// 200 - OK
+	checkEndpointGetStatuscode(t, "/version", http.StatusOK)
+}
