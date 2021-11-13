@@ -9,10 +9,10 @@ import (
 
 // Matches represents a slice of multiple Match structs.
 type Gesamtspielplan struct {
-	Matches      []Match
-	Season       season.Season
-	Championship string
-	Group        group.Group
+	Matches      []Match       `json:"matches" binding:"required"`
+	Season       season.Season `json:"season" binding:"required"`
+	Championship string        `json:"championship" binding:"required"`
+	Group        group.Group   `json:"group" binding:"required"`
 }
 
 // Match represents a nuLiga match (game)
@@ -30,7 +30,7 @@ type Match struct {
 	LocationId int `json:"location"`
 
 	// Id represents the unique ID of the match
-	Id int `json:"id"`
+	Id int `json:"id" binding:"required"`
 
 	// Annotation represents the annotations deposited for a match
 	Annotation matchAnnotation `json:"annotation"`
