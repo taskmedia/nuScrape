@@ -61,7 +61,7 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		// parse website content to Matches
 		matches, err := parser.ParseGesamtspielplan(html_scrape)
 		if err != nil {
-			err_msg := "parsing of gesamtspielplan failed"
+			err_msg := "parsing of matches failed"
 			log.WithFields(log.Fields{
 				"html_scrape": html_scrape,
 				"matches":     matches,
@@ -71,14 +71,21 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 			return
 		}
 
+		gsp := sport.Gesamtspielplan{
+			Season:       season,
+			Championship: championship,
+			Group:        group,
+			Matches:      matches,
+		}
+
 		// return matches as JSON
 		c.Writer.Header().Set("Content-Type", "application/json")
-		wr, err := json.Marshal(matches)
+		wr, err := json.Marshal(gsp)
 		if err != nil {
-			err_msg := "could not parse matches to JSON"
+			err_msg := "could not parse Gesamtspielplan to JSON"
 			log.WithFields(log.Fields{
-				"matches": matches,
-				"error":   err,
+				"gesamtspielplan": gsp,
+				"error":           err,
 			}).Warning(err_msg)
 			c.String(http.StatusInternalServerError, err_msg)
 			return

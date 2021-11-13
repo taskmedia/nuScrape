@@ -2,10 +2,18 @@ package sport
 
 import (
 	"time"
+
+	"github.com/taskmedia/nuScrape/pkg/sport/group"
+	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
 // Matches represents a slice of multiple Match structs.
-type Matches []Match
+type Gesamtspielplan struct {
+	Matches      []Match
+	Season       season.Season
+	Championship string
+	Group        group.Group
+}
 
 // Match represents a nuLiga match (game)
 type Match struct {

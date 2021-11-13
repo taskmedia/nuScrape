@@ -18,8 +18,8 @@ import (
 type Parse colly.HTMLElement
 
 // ParseGesamtspielplan will parse a HTML table from nuLiga to Matches
-func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
-	var matches sport.Matches
+func ParseGesamtspielplan(html colly.HTMLElement) ([]sport.Match, error) {
+	var matches []sport.Match
 	cachedDate := ""
 	skippedTableHeader := false
 
