@@ -58,7 +58,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) ([]sport.Match, error) {
 			// time
 			case 2 + dateNotAvailable:
 				match := regexp.MustCompile(`\d{2}:\d{2}`).FindStringSubmatch(t)
-				if len(match) > 1 {
+				if len(match) >= 1 {
 					m.Date = parseGermanTime(cachedDate, match[0])
 				}
 
