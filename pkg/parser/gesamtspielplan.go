@@ -17,10 +17,40 @@ import (
 
 type Parse colly.HTMLElement
 
-// ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to AgeCategory, class, relay
+var re_ageCategory = regexp.MustCompile(`(Männer|Frauen|(?:[mw][ABCDEF].Jgd.)|(?:männliche|weibliche) [ABCDEF](?:\s|\-)Jugend)`)
+var re_class = regexp.MustCompile(`((?:Bayern|Landes)liga|ÜBOL|ÜBL|Bezirks(?:ober)?(?:liga|klasse))`)
+var re_relay1 = regexp.MustCompile(`((?:(?:[Nn]ord|[Oo]st|[Ss]üd|[Ww]est|Mitte)(?:-|\s\d)?){1,2})`)
+var re_relay2 = regexp.MustCompile(`(?:Staffel )([ABCDEF])`)
+
+// ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to ageCategory, class, relay
 func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, string, string, error) {
-	fmt.Println(html.DOM.Find("h1").First().Text())
-	return "", "", "", nil
+	searchString := html.DOM.Find("h1").First().Text()
+
+	ageCategory := ""
+	f := re_ageCategory.FindStringSubmatch(searchString)
+	if len(f) > 1 {
+		ageCategory = f[1]
+	}
+
+	class := ""
+	f = re_class.FindStringSubmatch(searchString)
+	if len(f) > 1 {
+		class = f[1]
+	}
+
+	// relay has two regex pattern because the structure is not really standardized
+	relay := ""
+	f = re_relay1.FindStringSubmatch(searchString)
+	if len(f) > 1 {
+		relay = f[1]
+	} else {
+		f = re_relay2.FindStringSubmatch(searchString)
+		if len(f) > 1 {
+			relay = f[1]
+		}
+	}
+
+	return ageCategory, class, relay, nil
 }
 
 // ParseGesamtspielplanTable will parse a HTML table from nuLiga to Matches
