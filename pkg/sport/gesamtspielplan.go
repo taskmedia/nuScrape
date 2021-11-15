@@ -11,4 +11,6 @@ type Gesamtspielplan struct {
 	Season       season.Season `json:"season" binding:"required"`
 	Championship string        `json:"championship" binding:"required"`
 	Group        group.Group   `json:"group" binding:"required"`
+	Class        string        `json:"class" binding:"required"`
+	Relay        string        `json:"relay" binding:"required"`
 }
