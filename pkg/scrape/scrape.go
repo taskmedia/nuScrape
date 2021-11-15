@@ -9,7 +9,7 @@ import (
 
 // scrapeTableResultset will scrape the requested website and searches for given objects
 // the return will be a map of collyHTMLElement where the key is the search string
-// this will enable to seachr multiple elements in one scrape
+// this will enable to search multiple elements in one scrape
 func scrape(u url.URL, htmlElements ...string) (map[string]*colly.HTMLElement, error) {
 	content := make(map[string]*colly.HTMLElement)
 	var return_error error

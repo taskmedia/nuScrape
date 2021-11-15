@@ -17,7 +17,13 @@ import (
 
 type Parse colly.HTMLElement
 
-// ParseGesamtspielplan will parse a HTML table from nuLiga to Matches
+// ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to AgeCategory, class, relay
+func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, string, string, error) {
+	fmt.Println(html.DOM.Find("h1").First().Text())
+	return "", "", "", nil
+}
+
+// ParseGesamtspielplanTable will parse a HTML table from nuLiga to Matches
 func ParseGesamtspielplanTable(html *colly.HTMLElement) ([]sport.Match, error) {
 	var matches []sport.Match
 	cachedDate := ""

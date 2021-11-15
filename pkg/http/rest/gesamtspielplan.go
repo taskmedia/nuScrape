@@ -46,17 +46,21 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		// get data from scrapper
-		_, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
+		htmlInfo_scrape, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"season":       season,
 				"championship": championship,
 				"group":        group,
+				"scrape_info":  htmlInfo_scrape,
+				"scrape_table": htmlTable_scrape,
 			},
 			).Warning(err)
 			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
+
+		parser.ParseGesamtspielplanInfo(htmlInfo_scrape)
 
 		// parse website content to Matches
 		matches, err := parser.ParseGesamtspielplanTable(htmlTable_scrape)
