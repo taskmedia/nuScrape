@@ -1,16 +1,17 @@
 package scrape
 
 import (
-	"errors"
 	"net/url"
 
 	"github.com/gocolly/colly"
 	log "github.com/sirupsen/logrus"
 )
 
-// scrapeTableResultset will scrape the requested website and searches for table.result-set object
-func scrape(u url.URL, htmlElement string) (colly.HTMLElement, error) {
-	var content colly.HTMLElement
+// scrapeTableResultset will scrape the requested website and searches for given objects
+// the return will be a map of collyHTMLElement where the key is the search string
+// this will enable to seachr multiple elements in one scrape
+func scrape(u url.URL, htmlElements ...string) (map[string]colly.HTMLElement, error) {
+	content := make(map[string]colly.HTMLElement)
 	var return_error error
 
 	c := colly.NewCollector(
@@ -21,20 +22,17 @@ func scrape(u url.URL, htmlElement string) (colly.HTMLElement, error) {
 		log.WithField("url", u).Debug("scraping url")
 	})
 
-	c.OnHTML(htmlElement, func(e *colly.HTMLElement) {
-		content = *e
-	})
+	for _, htmlEl := range htmlElements {
+		c.OnHTML(htmlEl, func(e *colly.HTMLElement) {
+			content[htmlEl] = *e
+		})
+	}
 
 	c.OnError(func(_ *colly.Response, err error) {
 		return_error = err
 	})
 
 	c.Visit(u.String())
-
-	// check content object is empty
-	if content.Response == nil {
-		return_error = errors.New("scraping website was not successful")
-	}
 
 	return content, return_error
 }

@@ -46,7 +46,7 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		// get data from scrapper
-		html_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
+		_, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"season":       season,
@@ -59,11 +59,11 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		// parse website content to Matches
-		matches, err := parser.ParseGesamtspielplan(html_scrape)
+		matches, err := parser.ParseGesamtspielplanTable(htmlTable_scrape)
 		if err != nil {
 			err_msg := "parsing of matches failed"
 			log.WithFields(log.Fields{
-				"html_scrape": html_scrape,
+				"html_scrape": htmlTable_scrape,
 				"matches":     matches,
 				"error":       err,
 			}).Warning(err_msg)
