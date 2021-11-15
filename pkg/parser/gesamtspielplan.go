@@ -127,7 +127,9 @@ func ParseGesamtspielplan(html colly.HTMLElement) ([]sport.Match, error) {
 			m.ReportId = mr
 		}
 
-		matches = append(matches, m)
+		if m.Id != 0 {
+			matches = append(matches, m)
+		}
 	})
 
 	return matches, nil
