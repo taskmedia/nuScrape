@@ -10,8 +10,8 @@ import (
 // scrapeTableResultset will scrape the requested website and searches for given objects
 // the return will be a map of collyHTMLElement where the key is the search string
 // this will enable to seachr multiple elements in one scrape
-func scrape(u url.URL, htmlElements ...string) (map[string]colly.HTMLElement, error) {
-	content := make(map[string]colly.HTMLElement)
+func scrape(u url.URL, htmlElements ...string) (map[string]*colly.HTMLElement, error) {
+	content := make(map[string]*colly.HTMLElement)
 	var return_error error
 
 	c := colly.NewCollector(
@@ -24,7 +24,24 @@ func scrape(u url.URL, htmlElements ...string) (map[string]colly.HTMLElement, er
 
 	for _, htmlEl := range htmlElements {
 		c.OnHTML(htmlEl, func(e *colly.HTMLElement) {
-			content[htmlEl] = *e
+			suffix := ""
+			suffix_id := e.Attr("id")
+			if suffix_id != "" {
+				suffix += "#" + suffix_id
+			}
+			suffix_class := e.Attr("class")
+			if suffix_class != "" {
+				suffix += "." + suffix_class
+			}
+
+			// adding HTMLElement to htmlEl (generated)
+			// issue: htmlEl can not be used here because it will not (correctly) available in the function
+			// therefore the htmlEl has to be generated manually
+			//
+			// please keep in mind that a goselector has to be one tag:
+			// e.g. 'div#content-col1 h1' will result in h1 and would differ to htmlEl
+			content[e.Name+suffix] = e
+			return
 		})
 	}
 

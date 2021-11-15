@@ -8,7 +8,7 @@ import (
 )
 
 // GenerateGesamtspielplan will scrape and generate Matches for a given group
-func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (colly.HTMLElement, colly.HTMLElement, error) {
+func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (*colly.HTMLElement, *colly.HTMLElement, error) {
 	log.WithFields(log.Fields{
 		"season":       s,
 		"championship": c,
@@ -19,7 +19,7 @@ func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (colly.HTML
 	url := generateUrlGesamtspielplan(s, c, g)
 
 	// scrape and return table and gesamtspielplan info (class, relay, age, sex)
-	htmlInfo := "div#content-col1 h1"
+	htmlInfo := "div#content-col1"
 	htmlTable := "table.result-set"
 	scrapeMap, err := scrape(url, htmlInfo, htmlTable)
 
