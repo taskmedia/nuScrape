@@ -1,6 +1,7 @@
 package scrape
 
 import (
+	"errors"
 	"net/url"
 
 	"github.com/gocolly/colly"
@@ -31,6 +32,12 @@ func scrape(u url.URL, htmlElements ...string) (map[string]*colly.HTMLElement, e
 	})
 
 	c.Visit(u.String())
+
+	if len(content) == 0 {
+		return nil, errors.New("no htmlElement could be found on the website")
+	} else if len(content) != len(htmlElements) {
+		return content, errors.New("not htmlElement could be found on the website")
+	}
 
 	return content, return_error
 }
