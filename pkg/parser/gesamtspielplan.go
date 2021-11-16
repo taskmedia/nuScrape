@@ -50,6 +50,13 @@ func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, string, string, 
 		}
 	}
 
+	// check if ageCategory and class are present otherwise return error
+	// relay is not always present and optional
+	if ageCategory == "" || class == "" {
+		err := errors.New("ageCategory or class not found in Gesamtspielplan info")
+		return ageCategory, class, relay, err
+	}
+
 	return ageCategory, class, relay, nil
 }
 
