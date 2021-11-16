@@ -17,7 +17,7 @@ func checkEndpointGetStatuscode(t *testing.T, httpEndpoint string, expectedHttpS
 	req, _ := http.NewRequest(http.MethodGet, httpEndpoint, nil)
 	r.ServeHTTP(w, req)
 
-	assert.Equal(t, expectedHttpStatuscode, w.Code)
+	assert.Equal(t, expectedHttpStatuscode, w.Code, "failed to check endpoint%s", httpEndpoint)
 }
 
 // Test version HTTP endpoint
