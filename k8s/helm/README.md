@@ -7,15 +7,16 @@ minikube start --vm-driver=hyperkit
 minikube addons enable ingress
 ```
 
-Add deployment, service and ingress to Kubernetes cluster
+To deploy nuScrape pleas use Helm.
+
+# Helm
 
 ```bash
-kubectl apply -f ./deployment.yml
-kubectl apply -f ./service.yml
-kubectl apply -f ./ingress.yml
+cd k8s/helm
+helm install nuscrape ./
 ```
 
-Access application via URL:
+Access deployed application via URL:
 <br />
 http://k8s-local/nuscrape
 
