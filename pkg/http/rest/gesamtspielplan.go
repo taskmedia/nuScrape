@@ -46,24 +46,40 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		// get data from scrapper
-		html_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
+		htmlInfo_scrape, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"season":       season,
 				"championship": championship,
 				"group":        group,
+				"scrape_info":  htmlInfo_scrape,
+				"scrape_table": htmlTable_scrape,
 			},
 			).Warning(err)
 			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
+		ageCategory, class, relay, err := parser.ParseGesamtspielplanInfo(htmlInfo_scrape)
+		if err != nil {
+			err_msg := "parsing of gesamtspielplan info failed"
+			log.WithFields(log.Fields{
+				"html_scrape": htmlInfo_scrape.DOM.Text(),
+				"ageCategory": ageCategory,
+				"class":       class,
+				"relay":       relay,
+				"err":         err,
+			}).Warning(err_msg)
+			c.String(http.StatusInternalServerError, err_msg)
+			return
+		}
+
 		// parse website content to Matches
-		matches, err := parser.ParseGesamtspielplan(html_scrape)
+		matches, err := parser.ParseGesamtspielplanTable(htmlTable_scrape)
 		if err != nil {
 			err_msg := "parsing of matches failed"
 			log.WithFields(log.Fields{
-				"html_scrape": html_scrape,
+				"html_scrape": htmlTable_scrape.DOM.Text(),
 				"matches":     matches,
 				"error":       err,
 			}).Warning(err_msg)
@@ -77,6 +93,11 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 			Group:        group,
 			Matches:      matches,
 		}
+
+		// add Gesamtspielplan info to gsp
+		gsp.AgeCategory = ageCategory
+		gsp.Class = class
+		gsp.Relay = relay
 
 		// return matches as JSON
 		c.Writer.Header().Set("Content-Type", "application/json")

@@ -7,8 +7,8 @@ import (
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
-// GenerateGesamtspielplan will scrape and generate Matches for a given group
-func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (colly.HTMLElement, error) {
+// GenerateGesamtspielplan will scrape Gesamtspielplan and return Gesamtspielplan Info and Table HTMLElement
+func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (*colly.HTMLElement, *colly.HTMLElement, error) {
 	log.WithFields(log.Fields{
 		"season":       s,
 		"championship": c,
@@ -18,6 +18,13 @@ func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (colly.HTML
 
 	url := generateUrlGesamtspielplan(s, c, g)
 
-	// scrape and return table result-set
-	return scrape(url, "table.result-set")
+	// scrape and return table and gesamtspielplan info (class, relay, age, sex)
+	htmlInfo := "div#content-col1"
+	htmlTable := "table.result-set"
+	scrapeMap, err := scrape(url, htmlInfo, htmlTable)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return scrapeMap[htmlInfo], scrapeMap[htmlTable], err
 }

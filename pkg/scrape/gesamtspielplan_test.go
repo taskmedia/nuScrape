@@ -15,7 +15,7 @@ func TestScrapeGesamtspielplan(t *testing.T) {
 	s, _ := season.New("2021_22")
 	g, _ := group.New("281103")
 
-	html, err := ScrapeGesamtspielplan(s, c, g)
+	html_info, _, err := ScrapeGesamtspielplan(s, c, g)
 	assert.Equal(t, nil, err, "scraping nuLiga url failed")
-	assert.Equal(t, http.StatusOK, html.Response.StatusCode, "scraping of nuLiga url failed (status code)")
+	assert.Equal(t, http.StatusOK, html_info.Response.StatusCode, "scraping of nuLiga url failed (status code)")
 }
