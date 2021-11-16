@@ -1,42 +1,41 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
 categories:
-  - title: '🚀 Features'
+  - title: "🚀 Features"
     labels:
-      - 'feature'
-  - title: '🔥 Enhancements'
+      - "feature"
+  - title: "🔥 Enhancements"
     labels:
-      - 'enhancement'
-  - title: '🐛 Bug Fixes'
+      - "enhancement"
+  - title: "🐛 Bug Fixes"
     labels:
-      - 'fix'
-      - 'bug'
-  - title: '📓 Documentation'
+      - "fix"
+      - "bug"
+  - title: "📓 Documentation"
     labels:
-      - 'documentation'
-  - title: '🛂 Test'
+      - "documentation"
+  - title: "🛂 Test"
     labels:
-      - 'test'
-  - title: '🐋 Docker'
+      - "test"
+  - title: "🐋 Docker / Kubernetes"
     labels:
-      - 'docker'
+      - "docker-k8s"
 exclude-labels:
-  - 'skip-changelog'
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+  - "skip-changelog"
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
   major:
     labels:
-      - 'major'
+      - "major"
   minor:
     labels:
-      - 'minor'
+      - "minor"
   patch:
     labels:
-      - 'patch'
+      - "patch"
   default: patch
 template: |
   ## Changes since - $PREVIOUS_TAG
 
   $CHANGES
-

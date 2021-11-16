@@ -7,6 +7,7 @@ test:
   - "**/*_test.go"
 
 # add 'docker' label to any changes related to docker
-docker:
+docker-k8s:
   - Dockerfile
   - docker-compose.yml
+  - k8s/
