@@ -23,26 +23,7 @@ func scrape(u url.URL, htmlElements ...string) (map[string]*colly.HTMLElement, e
 	})
 
 	for _, htmlEl := range htmlElements {
-		c.OnHTML(htmlEl, func(e *colly.HTMLElement) {
-			suffix := ""
-			suffix_id := e.Attr("id")
-			if suffix_id != "" {
-				suffix += "#" + suffix_id
-			}
-			suffix_class := e.Attr("class")
-			if suffix_class != "" {
-				suffix += "." + suffix_class
-			}
-
-			// adding HTMLElement to htmlEl (generated)
-			// issue: htmlEl can not be used here because it will not (correctly) available in the function
-			// therefore the htmlEl has to be generated manually
-			//
-			// please keep in mind that a goselector has to be one tag:
-			// e.g. 'div#content-col1 h1' will result in h1 and would differ to htmlEl
-			content[e.Name+suffix] = e
-			return
-		})
+		c.OnHTML(htmlEl, getHtmlCallback(htmlEl, content))
 	}
 
 	c.OnError(func(_ *colly.Response, err error) {
@@ -52,4 +33,12 @@ func scrape(u url.URL, htmlElements ...string) (map[string]*colly.HTMLElement, e
 	c.Visit(u.String())
 
 	return content, return_error
+}
+
+// getHtmlCallback will wrap selector and content variable into HTMLCallback function
+// otherwise the selector would not be present in the function
+func getHtmlCallback(selector string, content map[string]*colly.HTMLElement) colly.HTMLCallback {
+	return func(e *colly.HTMLElement) {
+		content[selector] = e
+	}
 }
