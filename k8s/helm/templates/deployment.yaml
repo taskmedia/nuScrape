@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nuscrape
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: nuscrape
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: nuscrape
-          image: taskmedia/nuscrape:latest
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 8080
