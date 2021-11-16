@@ -28,7 +28,7 @@ func TestAddRouterGesamtspielplan(t *testing.T) {
 		{"season": "2021_22", "championship": "UF", "group": "280903"}, // Bezirksoberliga Männer Staffel B
 		{"season": "2021_22", "championship": "UF", "group": "273549"}, // Bezirksklasse Staffel Nord Männer
 		{"season": "2021_22", "championship": "UF", "group": "273611"}, // Bezirksliga Frauen
-		{"season": "2021_22", "championship": "UF", "group": "280434"}, // Bezirksliga Staffel Nord
+		// {"season": "2021_22", "championship": "UF", "group": "280434"}, // Bezirksliga Staffel Nord - disabled because no ageCategory is given
 
 		// Schwaben
 		{"season": "2021_22", "championship": "SW", "group": "273332"}, // Bezirksoberliga Männer - Staffel A
