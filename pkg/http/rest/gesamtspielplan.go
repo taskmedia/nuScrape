@@ -64,7 +64,7 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		if err != nil {
 			err_msg := "parsing of gesamtspielplan info failed"
 			log.WithFields(log.Fields{
-				"html_scrape": htmlInfo_scrape,
+				"html_scrape": htmlInfo_scrape.DOM.Text(),
 				"ageCategory": ageCategory,
 				"class":       class,
 				"relay":       relay,
@@ -79,7 +79,7 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		if err != nil {
 			err_msg := "parsing of matches failed"
 			log.WithFields(log.Fields{
-				"html_scrape": htmlTable_scrape,
+				"html_scrape": htmlTable_scrape.DOM.Text(),
 				"matches":     matches,
 				"error":       err,
 			}).Warning(err_msg)
