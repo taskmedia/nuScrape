@@ -60,7 +60,7 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 			return
 		}
 
-		parser.ParseGesamtspielplanInfo(htmlInfo_scrape)
+		ageCategory, class, relay, _ := parser.ParseGesamtspielplanInfo(htmlInfo_scrape)
 
 		// parse website content to Matches
 		matches, err := parser.ParseGesamtspielplanTable(htmlTable_scrape)
@@ -81,6 +81,11 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 			Group:        group,
 			Matches:      matches,
 		}
+
+		// add Gesamtspielplan info to gsp
+		gsp.AgeCategory = ageCategory
+		gsp.Class = class
+		gsp.Relay = relay
 
 		// return matches as JSON
 		c.Writer.Header().Set("Content-Type", "application/json")

@@ -22,7 +22,7 @@ var re_class = regexp.MustCompile(`((?:Bayern|Landes)liga|ÜBOL|ÜBL|Bezirks(?:o
 var re_relay1 = regexp.MustCompile(`((?:(?:[Nn]ord|[Oo]st|[Ss]üd|[Ww]est|Mitte)(?:-|\s\d)?){1,2})`)
 var re_relay2 = regexp.MustCompile(`(?:Staffel )([ABCDEF])`)
 
-// ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to ageCategory, class, relay
+// ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to ageCategory, class, relay and error
 func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, string, string, error) {
 	searchString := html.DOM.Find("h1").First().Text()
 
