@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nuscrape-deployment
+  name: {{ .Values.applicationname }}-deployment
   labels:
-    app: nuscrape
+    app: {{ .Values.applicationname }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: nuscrape
+      app: {{ .Values.applicationname }}
   template:
     metadata:
       labels:
-        app: nuscrape
+        app: {{ .Values.applicationname }}
     spec:
       containers:
-        - name: nuscrape
+        - name: {{ .Values.applicationname }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 8080
