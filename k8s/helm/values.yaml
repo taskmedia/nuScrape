@@ -1,5 +1,3 @@
-applicationname: nuscrape
-
 replicaCount: 1
 
 image:
