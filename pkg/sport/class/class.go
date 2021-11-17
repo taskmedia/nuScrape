@@ -1,6 +1,10 @@
 package class
 
-import log "github.com/sirupsen/logrus"
+import (
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+)
 
 var classMap = map[string]string{
 	"Bayernliga":      "BL",
@@ -30,7 +34,7 @@ func GetAbbreviation(fullname string) string {
 	}
 
 	for n, a := range classMap {
-		if fullname == n {
+		if strings.ToLower(fullname) == strings.ToLower(n) {
 			return a
 		}
 	}
@@ -44,7 +48,7 @@ func GetAbbreviation(fullname string) string {
 // input will be the abbreviation of that class
 func GetFullname(abbreviation string) string {
 	for n, a := range classMap {
-		if a == abbreviation {
+		if strings.ToLower(a) == strings.ToLower(abbreviation) {
 			return n
 		}
 	}
