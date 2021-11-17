@@ -24,20 +24,20 @@ var classMap = map[string]string{
 
 // GetAbbreviation returns the abbreviation of a class
 // input will be the complete name of the class
-func GetAbbreviation(name string) string {
-	if len(name) <= 4 {
-		return name
+func GetAbbreviation(fullname string) string {
+	if len(fullname) <= 4 {
+		return fullname
 	}
 
 	for n, a := range classMap {
-		if name == n {
+		if fullname == n {
 			return a
 		}
 	}
 
-	log.Warning("could not find abbreviation for class %s", name)
+	log.WithField("fullname", fullname).Warning("could not find abbreviation for class")
 
-	return name
+	return fullname
 }
 
 // GetFullname returns the complete name of a class
@@ -49,7 +49,7 @@ func GetFullname(abbreviation string) string {
 		}
 	}
 
-	log.Warning("could not find fullname for class %s", abbreviation)
+	log.WithField("abbreviation", abbreviation).Warning("could not find fullname for class")
 
 	return abbreviation
 }
