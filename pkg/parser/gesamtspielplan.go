@@ -13,6 +13,7 @@ import (
 	"github.com/gocolly/colly"
 	log "github.com/sirupsen/logrus"
 	"github.com/taskmedia/nuScrape/pkg/sport"
+	"github.com/taskmedia/nuScrape/pkg/sport/class"
 )
 
 type Parse colly.HTMLElement
@@ -23,7 +24,7 @@ var re_relay1 = regexp.MustCompile(`((?:(?:[Nn]ord|[Oo]st|[Ss]üd|[Ww]est|Mitte)
 var re_relay2 = regexp.MustCompile(`(?:Staffel )([ABCDEF])`)
 
 // ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to ageCategory, class, relay and error
-func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, string, string, error) {
+func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, class.Class, string, error) {
 	searchString := html.DOM.Find("h1").First().Text()
 
 	ageCategory := ""
@@ -32,10 +33,15 @@ func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, string, string, 
 		ageCategory = f[1]
 	}
 
-	class := ""
+	classString := ""
 	f = re_class.FindStringSubmatch(searchString)
 	if len(f) > 1 {
-		class = f[1]
+		classString = f[1]
+	}
+
+	class, err := class.Parse(classString)
+	if err != nil {
+		return "", "", "", err
 	}
 
 	// relay has two regex pattern because the structure is not really standardized

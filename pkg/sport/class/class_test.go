@@ -7,14 +7,19 @@ import (
 )
 
 // Test func TestGetAbbreviation if it returns the correct abbreviation
-func TestGetAbbreviation(t *testing.T) {
-	assert.Equal(t, "BL", GetAbbreviation("Bayernliga"), "Expected class abbreviation was not correct for Bayernliga")
-	assert.Equal(t, "BOL", GetAbbreviation("Bezirksoberliga"), "Expected class abbreviation was not correct for Bezirksoberliga")
-	assert.Equal(t, "ÜBOL", GetAbbreviation("ÜBOL"), "Expected class abbreviation was not correct for ÜBOL")
+func TestParse(t *testing.T) {
+	testClasses := map[string]Class{
+		"Bayernliga":      BL,
+		"Bezirksoberliga": BOL,
+		"ÜBOL":            UeBOL,
+		"LL":              LL,
+	}
+
+	for check, expected := range testClasses {
+		c, err := Parse(check)
+		assert.Equal(t, expected, c, "Expected other constant from parsing class from value %s", check)
+		assert.Equal(t, nil, err, "Expected no error from parsing class from value %s", check)
+	}
 }
 
-// Test func TestGetFullname if it returns the correct complete name of a class
-func TestGetFullname(t *testing.T) {
-	assert.Equal(t, "Landesliga", GetFullname("LL"), "Expected class fullname was not correct for LL")
-	// assert.Equal(t, "Bezirksklasse", GetFullname("BZK"), "Expected fullname was not correct for BZK") // not possible because duplicate entries
-}
+// todo other tests
