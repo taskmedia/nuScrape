@@ -24,21 +24,21 @@ var replacer = strings.NewReplacer("-", "", " ", "")
 // func GetAbbreviation returns short name of a class
 func (c Class) GetAbbreviation() string {
 	switch c {
-	case "Bayernliga":
+	case BL:
 		return "BL"
-	case "Landesliga":
+	case LL:
 		return "LL"
-	case "Bezirksoberliga":
+	case BOL:
 		return "BOL"
-	case "Bezirksliga":
+	case BZL:
 		return "BZL"
-	case "Bezirksklasse":
+	case BZK:
 		return "BZK"
-	case "Übergreifende Bezirksoberliga":
+	case UeBOL:
 		return "ÜBOL"
-	case "Übergreifende Bezirksliga":
+	case UeBL:
 		return "ÜBL"
-	case "Übergreifende Bezirksklasse":
+	case UeBK:
 		return "ÜBK"
 	default:
 		return "invalid class (abbreviation)"
