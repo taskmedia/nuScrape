@@ -74,16 +74,7 @@ func (r RelayName) GetAbbreviation() string {
 
 // func GetName returns the full name of a relayname
 func (r RelayName) GetName() string {
-	switch r {
-	case N, NO, NW, O, S, SO, SW, W, M, A, B, C, D, E, F:
-		str := reflect.ValueOf(r)
-		if str.Kind() != reflect.String {
-			return "error parsing. weil wert nicht string.....x"
-		}
-		return str.String()
-	default:
-		return "invalid class (abbreviation)"
-	}
+	return reflect.ValueOf(r).String()
 }
 
 // func Parse converts a given string to a RelayName

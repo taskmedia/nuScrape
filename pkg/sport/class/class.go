@@ -48,16 +48,7 @@ func (c Class) GetAbbreviation() string {
 
 // func GetName returns the full name of a class
 func (c Class) GetName() string {
-	switch c {
-	case BL, LL, BOL, BZL, BZK, UeBOL, UeBL, UeBK:
-		str := reflect.ValueOf(c)
-		if str.Kind() != reflect.String {
-			return "error parsing. weil wert nicht string.....x"
-		}
-		return str.String()
-	default:
-		return "invalid class (abbreviation)"
-	}
+	return reflect.ValueOf(c).String()
 }
 
 // func Parse converts a given string to a Class
