@@ -2,6 +2,7 @@ package relay
 
 import (
 	"errors"
+	"reflect"
 	"strings"
 )
 
@@ -33,6 +34,7 @@ const (
 // replaces dash and space
 var replacer = strings.NewReplacer("-", "", " ", "")
 
+// func GetAbbreviation returns short name of a relay
 func (r Relay) GetAbbreviation() string {
 	switch r {
 	case N:
@@ -70,40 +72,17 @@ func (r Relay) GetAbbreviation() string {
 	}
 }
 
+// func GetName returns the full name of a relay
 func (r Relay) GetName() string {
 	switch r {
-	case N:
-		return "Nord"
-	case NO:
-		return "Nord-Ost"
-	case NW:
-		return "Nord-West"
-	case O:
-		return "Ost"
-	case S:
-		return "Süd"
-	case SO:
-		return "Süd-Ost"
-	case SW:
-		return "Süd-West"
-	case W:
-		return "West"
-	case M:
-		return "Mitte"
-	case A:
-		return "A"
-	case B:
-		return "B"
-	case C:
-		return "C"
-	case D:
-		return "D"
-	case E:
-		return "E"
-	case F:
-		return "F"
+	case N, NO, NW, O, S, SO, SW, W, M, A, B, C, D, E, F:
+		str := reflect.ValueOf(r)
+		if str.Kind() != reflect.String {
+			return "error parsing. weil wert nicht string.....x"
+		}
+		return str.String()
 	default:
-		return "invalid relay (name)"
+		return "invalid class (abbreviation)"
 	}
 }
 

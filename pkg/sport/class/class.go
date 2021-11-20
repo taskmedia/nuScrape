@@ -2,6 +2,7 @@ package class
 
 import (
 	"errors"
+	"reflect"
 	"strings"
 )
 
@@ -48,24 +49,14 @@ func (c Class) GetAbbreviation() string {
 // func GetName returns the full name of a class
 func (c Class) GetName() string {
 	switch c {
-	case BL:
-		return "Bayernliga"
-	case LL:
-		return "Landesliga"
-	case BOL:
-		return "Bezirksoberliga"
-	case BZL:
-		return "Bezirksliga"
-	case BZK:
-		return "Bezirksklasse"
-	case UeBOL:
-		return "Übergreifende Bezirksoberliga"
-	case UeBL:
-		return "Übergreifende Bezirksliga"
-	case UeBK:
-		return "Übergreifende Bezirksklasse"
+	case BL, LL, BOL, BZL, BZK, UeBOL, UeBL, UeBK:
+		str := reflect.ValueOf(c)
+		if str.Kind() != reflect.String {
+			return "error parsing. weil wert nicht string.....x"
+		}
+		return str.String()
 	default:
-		return "invalid class (name)"
+		return "invalid class (abbreviation)"
 	}
 }
 
