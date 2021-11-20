@@ -95,7 +95,7 @@ func Parse(s string) (Class, error) {
 		unifyString(UeBK.GetAbbreviation()):
 		return UeBK, nil
 	default:
-		return "error", errors.New("todo")
+		return "error", errors.New("could not parse class type (unknown)")
 	}
 }
 

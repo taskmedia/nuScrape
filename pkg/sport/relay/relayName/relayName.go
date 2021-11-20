@@ -157,7 +157,7 @@ func Parse(str string) (RelayName, error) {
 		return F, nil
 
 	default:
-		return "", errors.New("todo")
+		return "", errors.New("could not parse relayName type (unknown)")
 	}
 }
 
