@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Test func TestGetAbbreviation if it returns the correct abbreviation
+// Test func GetAbbreviation if it returns the correct class
 func TestParse(t *testing.T) {
 	testClasses := map[string]Class{
 		"Bayernliga":      BL,
