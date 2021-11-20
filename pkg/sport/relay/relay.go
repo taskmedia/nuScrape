@@ -1,59 +1,198 @@
 package relay
 
 import (
+	"errors"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
-var relayMap = map[string]string{
-	"Nord":      "N",
-	"Nord-Ost":  "NO",
-	"Nord-West": "NW",
+type Relay string
 
-	"Ost": "O",
+const (
+	N  = Relay("Nord")
+	NO = Relay("Nord-Ost")
+	NW = Relay("Nord-West")
 
-	"Süd":      "S",
-	"Süd-Ost":  "SO",
-	"Süd-West": "SW",
+	O = Relay("Ost")
 
-	"West": "W",
+	S  = Relay("Süd")
+	SO = Relay("Süd-Ost")
+	SW = Relay("Süd-West")
 
-	"Mitte": "M",
+	W = Relay("West")
 
-	"A": "A",
-	"B": "B",
-	"C": "C",
-	"D": "D",
-	"E": "E",
-	"F": "F",
+	M = Relay("Mitte")
+
+	A = Relay("A")
+	B = Relay("B")
+	C = Relay("C")
+	D = Relay("D")
+	E = Relay("E")
+	F = Relay("F")
+)
+
+// replaces dash and space
+var replacer = strings.NewReplacer("-", "", " ", "")
+
+func (r Relay) GetAbbreviation() string {
+	switch r {
+	case N:
+		return "N"
+	case NO:
+		return "NO"
+	case NW:
+		return "NW"
+	case O:
+		return "O"
+	case S:
+		return "S"
+	case SO:
+		return "SO"
+	case SW:
+		return "SW"
+	case W:
+		return "W"
+	case M:
+		return "M"
+	case A:
+		return "A"
+	case B:
+		return "B"
+	case C:
+		return "C"
+	case D:
+		return "D"
+	case E:
+		return "E"
+	case F:
+		return "F"
+	default:
+		return "invalid relay (abbreviation)"
+	}
 }
 
-// GetAbbreviation returns the abbreviation of a relay
-// input will be the complete name of the relay
-func GetAbbreviation(fullname string) string {
-	for n, a := range relayMap {
-		// dash will be removed because sometimes it is not provided
-		if strings.ReplaceAll(strings.ToLower(fullname), "-", "") == strings.ReplaceAll(strings.ToLower(n), "-", "") {
-			return a
-		}
+func (r Relay) GetName() string {
+	switch r {
+	case N:
+		return "Nord"
+	case NO:
+		return "Nord-Ost"
+	case NW:
+		return "Nord-West"
+	case O:
+		return "Ost"
+	case S:
+		return "Süd"
+	case SO:
+		return "Süd-Ost"
+	case SW:
+		return "Süd-West"
+	case W:
+		return "West"
+	case M:
+		return "Mitte"
+	case A:
+		return "A"
+	case B:
+		return "B"
+	case C:
+		return "C"
+	case D:
+		return "D"
+	case E:
+		return "E"
+	case F:
+		return "F"
+	default:
+		return "invalid relay (name)"
 	}
-
-	log.WithField("fullname", fullname).Warning("could not find abbreviation for relay")
-
-	return fullname
 }
 
-// GetFullname returns the complete name of a relay
-// input will be the abbreviation of that relay
-func GetFullname(abbreviation string) string {
-	for n, a := range relayMap {
-		if strings.ToLower(a) == strings.ToLower(abbreviation) {
-			return n
-		}
+// func Parse converts a given string to a Relay
+// it tries to convert different styles of relays to a Relay type
+func Parse(s string) (Relay, error) {
+	switch unifyString(s) {
+	case
+		unifyString(N.GetName()),
+		unifyString(N.GetAbbreviation()):
+		return N, nil
+
+	case
+		unifyString(NO.GetName()),
+		unifyString(NO.GetAbbreviation()):
+		return NO, nil
+
+	case
+		unifyString(NW.GetName()),
+		unifyString(NW.GetAbbreviation()):
+		return NW, nil
+
+	case
+		unifyString(O.GetName()),
+		unifyString(O.GetAbbreviation()):
+		return O, nil
+
+	case
+		unifyString(S.GetName()),
+		unifyString(S.GetAbbreviation()):
+		return S, nil
+
+	case
+		unifyString(SO.GetName()),
+		unifyString(SO.GetAbbreviation()):
+		return SO, nil
+
+	case
+		unifyString(SW.GetName()),
+		unifyString(SW.GetAbbreviation()):
+		return SW, nil
+
+	case
+		unifyString(W.GetName()),
+		unifyString(W.GetAbbreviation()):
+		return W, nil
+
+	case
+		unifyString(M.GetName()),
+		unifyString(M.GetAbbreviation()):
+		return M, nil
+
+	case
+		unifyString(A.GetName()),
+		unifyString(A.GetAbbreviation()):
+		return A, nil
+
+	case
+		unifyString(B.GetName()),
+		unifyString(B.GetAbbreviation()):
+		return B, nil
+
+	case
+		unifyString(C.GetName()),
+		unifyString(C.GetAbbreviation()):
+		return C, nil
+
+	case
+		unifyString(D.GetName()),
+		unifyString(D.GetAbbreviation()):
+		return D, nil
+
+	case
+		unifyString(E.GetName()),
+		unifyString(E.GetAbbreviation()):
+		return E, nil
+
+	case
+		unifyString(F.GetName()),
+		unifyString(F.GetAbbreviation()):
+		return F, nil
+
+	default:
+		return "", errors.New("todo")
 	}
+}
 
-	log.WithField("abbreviation", abbreviation).Warning("could not find fullname for relay")
-
-	return abbreviation
+// func unifyString returns the value removed from dash or spaces in lowercase
+// this will be used to compare strings with each other
+func unifyString(s string) string {
+	return strings.ToLower(replacer.Replace(s))
 }

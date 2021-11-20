@@ -3,6 +3,7 @@ package sport
 import (
 	"github.com/taskmedia/nuScrape/pkg/sport/class"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
+	"github.com/taskmedia/nuScrape/pkg/sport/relay"
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
@@ -14,5 +15,5 @@ type Gesamtspielplan struct {
 	Group        group.Group   `json:"group" binding:"required"`
 	AgeCategory  string        `json:"agecategory" binding:"required"`
 	Class        class.Class   `json:"class" binding:"required"`
-	Relay        string        `json:"relay"`
+	Relay        relay.Relay   `json:"relay"`
 }
