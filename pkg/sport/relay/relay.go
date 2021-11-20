@@ -1,173 +1,47 @@
 package relay
 
 import (
-	"errors"
-	"reflect"
+	"regexp"
+	"strconv"
 	"strings"
+
+	"github.com/taskmedia/nuScrape/pkg/sport/relay/relayName"
 )
 
-type Relay string
-
-const (
-	N  = Relay("Nord")
-	NO = Relay("Nord-Ost")
-	NW = Relay("Nord-West")
-
-	O = Relay("Ost")
-
-	S  = Relay("Süd")
-	SO = Relay("Süd-Ost")
-	SW = Relay("Süd-West")
-
-	W = Relay("West")
-
-	M = Relay("Mitte")
-
-	A = Relay("A")
-	B = Relay("B")
-	C = Relay("C")
-	D = Relay("D")
-	E = Relay("E")
-	F = Relay("F")
-)
+type Relay struct {
+	Name relayName.RelayName
+	Id   int
+}
 
 // replaces dash and space
 var replacer = strings.NewReplacer("-", "", " ", "")
 
-// func GetAbbreviation returns short name of a relay
-func (r Relay) GetAbbreviation() string {
-	switch r {
-	case N:
-		return "N"
-	case NO:
-		return "NO"
-	case NW:
-		return "NW"
-	case O:
-		return "O"
-	case S:
-		return "S"
-	case SO:
-		return "SO"
-	case SW:
-		return "SW"
-	case W:
-		return "W"
-	case M:
-		return "M"
-	case A:
-		return "A"
-	case B:
-		return "B"
-	case C:
-		return "C"
-	case D:
-		return "D"
-	case E:
-		return "E"
-	case F:
-		return "F"
-	default:
-		return "invalid relay (abbreviation)"
-	}
-}
-
-// func GetName returns the full name of a relay
-func (r Relay) GetName() string {
-	switch r {
-	case N, NO, NW, O, S, SO, SW, W, M, A, B, C, D, E, F:
-		str := reflect.ValueOf(r)
-		if str.Kind() != reflect.String {
-			return "error parsing. weil wert nicht string.....x"
-		}
-		return str.String()
-	default:
-		return "invalid class (abbreviation)"
-	}
-}
+// searches for a number in unified relay
+var re_relayNumber = regexp.MustCompile(`(.*)(\d)$`)
 
 // func Parse converts a given string to a Relay
 // it tries to convert different styles of relays to a Relay type
 func Parse(s string) (Relay, error) {
-	switch unifyString(s) {
-	case
-		unifyString(N.GetName()),
-		unifyString(N.GetAbbreviation()):
-		return N, nil
+	searchString := unifyString(s)
+	classNumber := -1
 
-	case
-		unifyString(NO.GetName()),
-		unifyString(NO.GetAbbreviation()):
-		return NO, nil
-
-	case
-		unifyString(NW.GetName()),
-		unifyString(NW.GetAbbreviation()):
-		return NW, nil
-
-	case
-		unifyString(O.GetName()),
-		unifyString(O.GetAbbreviation()):
-		return O, nil
-
-	case
-		unifyString(S.GetName()),
-		unifyString(S.GetAbbreviation()):
-		return S, nil
-
-	case
-		unifyString(SO.GetName()),
-		unifyString(SO.GetAbbreviation()):
-		return SO, nil
-
-	case
-		unifyString(SW.GetName()),
-		unifyString(SW.GetAbbreviation()):
-		return SW, nil
-
-	case
-		unifyString(W.GetName()),
-		unifyString(W.GetAbbreviation()):
-		return W, nil
-
-	case
-		unifyString(M.GetName()),
-		unifyString(M.GetAbbreviation()):
-		return M, nil
-
-	case
-		unifyString(A.GetName()),
-		unifyString(A.GetAbbreviation()):
-		return A, nil
-
-	case
-		unifyString(B.GetName()),
-		unifyString(B.GetAbbreviation()):
-		return B, nil
-
-	case
-		unifyString(C.GetName()),
-		unifyString(C.GetAbbreviation()):
-		return C, nil
-
-	case
-		unifyString(D.GetName()),
-		unifyString(D.GetAbbreviation()):
-		return D, nil
-
-	case
-		unifyString(E.GetName()),
-		unifyString(E.GetAbbreviation()):
-		return E, nil
-
-	case
-		unifyString(F.GetName()),
-		unifyString(F.GetAbbreviation()):
-		return F, nil
-
-	default:
-		return "", errors.New("todo")
+	// check if number
+	re := re_relayNumber.FindStringSubmatch(searchString)
+	if len(re) > 2 {
+		searchString = re[1]
+		cn, err := strconv.Atoi(re[2])
+		if err != nil {
+			return Relay{}, err
+		}
+		classNumber = cn
 	}
+
+	rn, err := relayName.Parse(searchString)
+	if err != nil {
+		return Relay{}, err
+	}
+
+	return Relay{Name: rn, Id: classNumber}, nil
 }
 
 // func unifyString returns the value removed from dash or spaces in lowercase

@@ -42,7 +42,7 @@ func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, class.Class, rel
 
 	class, err := class.Parse(classString)
 	if err != nil {
-		return "", "", "", err
+		return "", "", relay.Relay{}, err
 	}
 
 	// relay has two regex pattern because the structure is not really standardized
@@ -57,19 +57,19 @@ func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, class.Class, rel
 		}
 	}
 
-	relay, err := relay.Parse(relayString)
+	r, err := relay.Parse(relayString)
 	if err != nil {
-		return "", "", "", err
+		return "", "", r, err
 	}
 
 	// check if ageCategory and class are present otherwise return error
 	// relay is not always present and optional
 	if ageCategory == "" || class == "" {
 		err := errors.New("ageCategory or class not found in Gesamtspielplan info")
-		return ageCategory, class, relay, err
+		return ageCategory, class, r, err
 	}
 
-	return ageCategory, class, relay, nil
+	return ageCategory, class, r, nil
 }
 
 // ParseGesamtspielplanTable will parse a HTML table from nuLiga to Matches
