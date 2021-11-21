@@ -13,6 +13,7 @@ import (
 	"github.com/gocolly/colly"
 	log "github.com/sirupsen/logrus"
 	"github.com/taskmedia/nuScrape/pkg/sport"
+	"github.com/taskmedia/nuScrape/pkg/sport/ageCategory"
 	"github.com/taskmedia/nuScrape/pkg/sport/class"
 	"github.com/taskmedia/nuScrape/pkg/sport/relay"
 )
@@ -25,13 +26,18 @@ var re_relay1 = regexp.MustCompile(`((?:(?:[Nn]ord|[Oo]st|[Ss]üd|[Ww]est|Mitte)
 var re_relay2 = regexp.MustCompile(`(?:Staffel )([ABCDEF])`)
 
 // ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to ageCategory, class, relay and error
-func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, class.Class, relay.Relay, error) {
+func ParseGesamtspielplanInfo(html *colly.HTMLElement) (ageCategory.AgeCategory, class.Class, relay.Relay, error) {
 	searchString := html.DOM.Find("h1").First().Text()
 
-	ageCategory := ""
+	ageCategoryString := ""
 	f := re_ageCategory.FindStringSubmatch(searchString)
 	if len(f) > 1 {
-		ageCategory = f[1]
+		ageCategoryString = f[1]
+	}
+
+	ac, err := ageCategory.Parse(ageCategoryString)
+	if err != nil {
+		return ageCategory.AgeCategory{}, "", relay.Relay{}, err
 	}
 
 	classString := ""
@@ -42,7 +48,7 @@ func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, class.Class, rel
 
 	class, err := class.Parse(classString)
 	if err != nil {
-		return "", "", relay.Relay{}, err
+		return ac, "", relay.Relay{}, err
 	}
 
 	// relay has two regex pattern because the structure is not really standardized
@@ -59,17 +65,17 @@ func ParseGesamtspielplanInfo(html *colly.HTMLElement) (string, class.Class, rel
 
 	r, err := relay.Parse(relayString)
 	if err != nil {
-		return "", "", r, err
+		return ac, "", r, err
 	}
 
 	// check if ageCategory and class are present otherwise return error
 	// relay is not always present and optional
-	if ageCategory == "" || class == "" {
-		err := errors.New("ageCategory or class not found in Gesamtspielplan info")
-		return ageCategory, class, r, err
+	if class == "" {
+		err := errors.New("class not found in Gesamtspielplan info")
+		return ac, class, r, err
 	}
 
-	return ageCategory, class, r, nil
+	return ac, class, r, nil
 }
 
 // ParseGesamtspielplanTable will parse a HTML table from nuLiga to Matches
