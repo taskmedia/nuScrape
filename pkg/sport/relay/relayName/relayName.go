@@ -80,7 +80,7 @@ func (r RelayName) GetName() string {
 // func Parse converts a given string to a RelayName
 // it tries to convert different styles of relaynamess to a RelayName type
 func Parse(str string) (RelayName, error) {
-	switch str {
+	switch unifyString(str) {
 	case
 		unifyString(N.GetName()),
 		unifyString(N.GetAbbreviation()):
