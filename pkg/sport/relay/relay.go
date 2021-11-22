@@ -1,6 +1,7 @@
 package relay
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -18,6 +19,36 @@ var replacer = strings.NewReplacer("-", "", " ", "")
 
 // searches for a number in unified relay
 var re_relayNumber = regexp.MustCompile(`(.*)(\d)$`)
+
+// func GetAbbreviation returns short name of a relay
+// if no relay given a empty string will be returned
+func (r Relay) GetAbbreviation() string {
+	if r.Name == "" {
+		return ""
+	}
+
+	// check if no ID is provided
+	if r.Id == 0 || r.Id == -1 {
+		return r.Name.GetAbbreviation()
+	}
+
+	return fmt.Sprintf("%s %d", r.Name.GetAbbreviation(), r.Id)
+}
+
+// func GetName returns the full name of a relay
+// if no relay given a empty string will be returned
+func (r Relay) GetName() string {
+	if r.Name == "" {
+		return ""
+	}
+
+	// check if no ID is provided
+	if r.Id == 0 || r.Id == -1 {
+		return r.Name.GetName()
+	}
+
+	return fmt.Sprintf("%s %d", r.Name.GetName(), r.Id)
+}
 
 // func Parse converts a given string to a Relay
 // it tries to convert different styles of relays to a Relay type
