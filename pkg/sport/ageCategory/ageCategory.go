@@ -2,6 +2,7 @@ package ageCategory
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -31,7 +32,7 @@ func (c *AgeCategory) GetName() string {
 		ac = "weibliche"
 	}
 
-	ac += strings.ToUpper(c.Sex) + "-Jugend"
+	ac += fmt.Sprintf(" %s-Jugend", strings.ToUpper(c.Age))
 
 	return ac
 }
