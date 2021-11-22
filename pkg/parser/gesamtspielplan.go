@@ -63,9 +63,14 @@ func ParseGesamtspielplanInfo(html *colly.HTMLElement) (ageCategory.AgeCategory,
 		}
 	}
 
-	r, err := relay.Parse(relayString)
-	if err != nil {
-		return ac, "", r, err
+	var r relay.Relay
+	if relayString != "" {
+		r, err = relay.Parse(relayString)
+		if err != nil {
+			return ac, "", r, err
+		}
+	} else {
+		r = relay.Relay{}
 	}
 
 	// check if ageCategory and class are present otherwise return error
