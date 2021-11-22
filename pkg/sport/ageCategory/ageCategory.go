@@ -13,6 +13,7 @@ type AgeCategory struct {
 // replaces dash, space and period
 var replacer = strings.NewReplacer("-", "", " ", "", ".", "")
 
+// func GetName returns the full name of a ageCategory
 func (c *AgeCategory) GetName() string {
 	if c.Age == "" {
 		if c.Sex == "m" {
@@ -35,6 +36,7 @@ func (c *AgeCategory) GetName() string {
 	return ac
 }
 
+// func GetAbbreviation returns short name of a ageCategory
 func (c *AgeCategory) GetAbbreviation() string {
 	if c.Age == "" {
 		if c.Sex == "m" {
@@ -46,6 +48,8 @@ func (c *AgeCategory) GetAbbreviation() string {
 	return strings.ToLower(c.Sex) + strings.ToUpper(c.Age)
 }
 
+// func Parse converts a given string to a ageCategory
+// it tries to convert different styles of ageCategory to a ageCategory struct
 func Parse(s string) (AgeCategory, error) {
 	switch unifyString(s) {
 	case "männer":
