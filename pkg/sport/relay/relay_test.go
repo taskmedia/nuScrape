@@ -25,5 +25,3 @@ func TestParse(t *testing.T) {
 		assert.Equal(t, nil, err, "Expected no error from parsing relay from value %s", check)
 	}
 }
-
-// todo other tests
