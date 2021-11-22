@@ -7,6 +7,38 @@ import (
 	"github.com/taskmedia/nuScrape/pkg/sport/relay/relayName"
 )
 
+// Test func GetAbbreviation if it returns the correct abbreviation of a relay
+func TestGetAbbreviation(t *testing.T) {
+	testRelay := map[string]Relay{
+		"N":   Relay{Name: relayName.N, Id: -1},
+		"SW":  Relay{Name: relayName.SW, Id: -1},
+		"W 2": Relay{Name: relayName.W, Id: 2},
+		"M":   Relay{Name: relayName.M, Id: -1},
+		"B":   Relay{Name: relayName.B, Id: -1},
+		"":    Relay{},
+	}
+
+	for check, expected := range testRelay {
+		assert.Equal(t, check, expected.GetAbbreviation(), "expected other abbreviation from relay %s", check)
+	}
+}
+
+// Test func GetName if it returns the correct full name of a relay
+func TestGetName(t *testing.T) {
+	testRelay := map[string]Relay{
+		"Nord":     Relay{Name: relayName.N, Id: -1},
+		"Süd-West": Relay{Name: relayName.SW, Id: -1},
+		"West 2":   Relay{Name: relayName.W, Id: 2},
+		"Mitte":    Relay{Name: relayName.M, Id: -1},
+		"B":        Relay{Name: relayName.B, Id: -1},
+		"":         Relay{},
+	}
+
+	for check, expected := range testRelay {
+		assert.Equal(t, check, expected.GetName(), "expected other full name from relay %s", check)
+	}
+}
+
 // Test func Parse if it returns the correct relay
 func TestParse(t *testing.T) {
 	testRelays := map[string]Relay{
