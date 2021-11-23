@@ -41,26 +41,40 @@ To get a gesamtspielplan you can request following endpoint: http://localhost:80
 The response will be e.g.:
 
 ```json
-[
-  {
-      "date": "2021-10-09T19:15:00Z",
-      "team": {
-        "home": "TV Memmingen",
-        "guest": "TSV Ottobeuren III"
-      },
-      "goal": {
-        "home": 28,
-        "guest": 27
-      },
-      "location": 27031301,
-      "id": 27031301,
-      "annotation": {
-        "date": "",
-        "result": ""
-      },
-      "report": 7013920,
-      "referee": null
-  },
-  ...
-]
+{
+    "matches": [
+        {
+            "date": "2021-10-09T19:15:00Z",
+            "team": {
+                "home": "TV Memmingen",
+                "guest": "TSV Ottobeuren III"
+            },
+            "goal": {
+                "home": 28,
+                "guest": 27
+            },
+            "location": 270222,
+            "id": 27031301,
+            "annotation": {
+                "date": "",
+                "result": ""
+            },
+            "report": 7013920,
+            "referee": null
+        },
+        ...
+    ],
+    "season": "2021_22",
+    "championship": "AV",
+    "group": 281103,
+    "agecategory": {
+        "Sex": "m",
+        "Age": ""
+    },
+    "class": "Bezirksklasse",
+    "relay": {
+        "Name": "Nord-West",
+        "Id": -1
+    }
+}
 ```
