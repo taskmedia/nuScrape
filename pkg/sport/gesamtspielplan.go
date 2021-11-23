@@ -18,3 +18,22 @@ type Gesamtspielplan struct {
 	Class        class.Class             `json:"class" binding:"required"`
 	Relay        relay.Relay             `json:"relay"`
 }
+
+// func GetDistinctTeams will return a list of all teams in a Gesamtspielplan
+// the returned string slice will not contain duplicates.
+func (gsp Gesamtspielplan) GetDistinctTeams() []string {
+	var dt []string
+
+	// add first team
+	dt = append(dt, gsp.Matches[0].Team.Home)
+
+	// loop through all Guest teams from first team and add them to the list
+	// this will probably have a better performance because no slice comparison will be required
+	// possible because matches are of type double round robin tournament
+	for _, m := range gsp.Matches {
+		if m.Team.Home == dt[0] {
+			dt = append(dt, m.Team.Guest)
+		}
+	}
+	return dt
+}
