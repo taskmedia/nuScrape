@@ -2,7 +2,6 @@ package parser
 
 import (
 	"errors"
-	"fmt"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -13,11 +12,79 @@ import (
 	"github.com/gocolly/colly"
 	log "github.com/sirupsen/logrus"
 	"github.com/taskmedia/nuScrape/pkg/sport"
+	"github.com/taskmedia/nuScrape/pkg/sport/ageCategory"
+	"github.com/taskmedia/nuScrape/pkg/sport/class"
+	"github.com/taskmedia/nuScrape/pkg/sport/relay"
 )
 
-// ParseGesamtspielplan will parse a HTML table from nuLiga to Matches
-func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
-	var matches sport.Matches
+type Parse colly.HTMLElement
+
+var re_ageCategory = regexp.MustCompile(`(Männer|Frauen|(?:[mw][ABCDEF].Jgd.)|(?:männliche|weibliche) [ABCDEF](?:\s|\-)Jugend)`)
+var re_class = regexp.MustCompile(`((?:Bayern|Landes)liga|ÜBOL|ÜBL|Bezirks(?:ober)?(?:liga|klasse))`)
+var re_relay1 = regexp.MustCompile(`((?:(?:[Nn]ord|[Oo]st|[Ss]üd|[Ww]est|Mitte)(?:-|\s\d)?){1,2})`)
+var re_relay2 = regexp.MustCompile(`(?:Staffel )([ABCDEF])`)
+
+// ParseGesamtspielplanInfo will parse a HTML (h1) group description from nuLiga to ageCategory, class, relay and error
+func ParseGesamtspielplanInfo(html *colly.HTMLElement) (ageCategory.AgeCategory, class.Class, relay.Relay, error) {
+	searchString := html.DOM.Find("h1").First().Text()
+
+	ageCategoryString := ""
+	f := re_ageCategory.FindStringSubmatch(searchString)
+	if len(f) > 1 {
+		ageCategoryString = f[1]
+	}
+
+	ac, err := ageCategory.Parse(ageCategoryString)
+	if err != nil {
+		return ageCategory.AgeCategory{}, "", relay.Relay{}, err
+	}
+
+	classString := ""
+	f = re_class.FindStringSubmatch(searchString)
+	if len(f) > 1 {
+		classString = f[1]
+	}
+
+	class, err := class.Parse(classString)
+	if err != nil {
+		return ac, "", relay.Relay{}, err
+	}
+
+	// relay has two regex pattern because the structure is not really standardized
+	relayString := ""
+	f = re_relay1.FindStringSubmatch(searchString)
+	if len(f) > 1 {
+		relayString = f[1]
+	} else {
+		f = re_relay2.FindStringSubmatch(searchString)
+		if len(f) > 1 {
+			relayString = f[1]
+		}
+	}
+
+	var r relay.Relay
+	if relayString != "" {
+		r, err = relay.Parse(relayString)
+		if err != nil {
+			return ac, "", r, err
+		}
+	} else {
+		r = relay.Relay{}
+	}
+
+	// check if ageCategory and class are present otherwise return error
+	// relay is not always present and optional
+	if class == "" {
+		err := errors.New("class not found in Gesamtspielplan info")
+		return ac, class, r, err
+	}
+
+	return ac, class, r, nil
+}
+
+// ParseGesamtspielplanTable will parse a HTML table from nuLiga to Matches
+func ParseGesamtspielplanTable(html *colly.HTMLElement) ([]sport.Match, error) {
+	var matches []sport.Match
 	cachedDate := ""
 	skippedTableHeader := false
 
@@ -30,6 +97,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 		}
 
 		m := sport.Match{}
+		dateNotAvailable := 0
 
 		// loop through the columns of the table
 		tr.Find("td").Each(func(td_i int, td *goquery.Selection) {
@@ -38,18 +106,34 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 			// switch through the column elements
 			// each column must be considered and parsed separately
 			switch td_i {
+			case 0:
+				// if no date is set in column 0 Termin offen will be set
+				// the column span will be two - because of this the columns would not match anymore
+				if t == "Termin offen" {
+					dateNotAvailable = -1
+					return
+				}
+
 			// date
-			case 1:
+			case 1 + dateNotAvailable:
 				if t != "" {
-					// date has to be cached because not every column will have a date field
-					// the date will be parsed together with the time
 					cachedDate = t
 				}
 
 			// time
-			case 2:
+			case 2 + dateNotAvailable:
 				match := regexp.MustCompile(`\d{2}:\d{2}`).FindStringSubmatch(t)
-				m.Date = parseGermanTime(cachedDate, match[0])
+				if len(match) >= 1 {
+					matchDate, err := parseGermanTime(cachedDate, match[0])
+					if err != nil {
+						log.WithFields(log.Fields{
+							"date":  cachedDate,
+							"time":  match[0],
+							"error": err,
+						}).Warning("can not parse date/time")
+					}
+					m.Date = matchDate
+				}
 
 				// check if date annotation is available
 				// this happens when e.g. a game has been postponed
@@ -59,7 +143,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 				}
 
 			// location ID
-			case 3:
+			case 3 + dateNotAvailable:
 				location, err := strconv.Atoi(t)
 				if err != nil {
 					log.WithFields(log.Fields{
@@ -71,7 +155,7 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 				}
 
 			// game ID
-			case 4:
+			case 4 + dateNotAvailable:
 				game, err := strconv.Atoi(t)
 				if err != nil {
 					log.WithFields(log.Fields{
@@ -79,19 +163,19 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 						"error":  err,
 					}).Warning("can not parse game ID")
 				} else {
-					m.LocationId = game
+					m.Id = game
 				}
 
 			// hometeam
-			case 5:
+			case 5 + dateNotAvailable:
 				m.Team.Home = t
 
 			// guestteam
-			case 6:
+			case 6 + dateNotAvailable:
 				m.Team.Guest = t
 
 			// result / result annotation / referee
-			case 7:
+			case 7 + dateNotAvailable:
 				goalsHome, goalsGuest, annotation, referee, err := parseResult(t, td)
 				if err != nil {
 					log.WithFields(log.Fields{
@@ -116,7 +200,9 @@ func ParseGesamtspielplan(html colly.HTMLElement) (sport.Matches, error) {
 			m.ReportId = mr
 		}
 
-		matches = append(matches, m)
+		if m.Id != 0 {
+			matches = append(matches, m)
+		}
 	})
 
 	return matches, nil
@@ -147,17 +233,44 @@ func getMeetingReport(html_element *goquery.Selection) (int, bool) {
 
 // func parseGermanTime will use the given time format from nuLiga and parse it into Time
 // warning: the time will have not timezone information
-func parseGermanTime(d, t string) time.Time {
+func parseGermanTime(d, t string) (time.Time, error) {
 	split_date := strings.Split(d, ".")
 
-	datetimeFormatted := fmt.Sprintf("%s-%s-%sT%s:00.000Z", split_date[2], split_date[1], split_date[0], t)
-
-	dt, err := time.Parse(time.RFC3339, datetimeFormatted)
+	year, err := strconv.Atoi(split_date[2])
 	if err != nil {
-		fmt.Println(err)
+		return time.Time{}, errors.New("could not parse year from date " + d)
 	}
 
-	return dt
+	mont_int, err := strconv.Atoi(split_date[1])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse month from date " + d)
+	}
+	month := time.Month(mont_int)
+
+	day, err := strconv.Atoi(split_date[0])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse day from date " + d)
+	}
+
+	split_time := strings.Split(t, ":")
+
+	hour, err := strconv.Atoi(split_time[0])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse hour from time " + t)
+	}
+
+	minute, err := strconv.Atoi(split_time[1])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse minute from time " + t)
+	}
+
+	timeLocation, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		log.Fatal(err)
+	}
+	timeInUtc := time.Date(year, month, day, hour, minute, 0, 0, timeLocation)
+
+	return timeInUtc, nil
 }
 
 // func parseResult will parse the input from  result column and parse it to different information

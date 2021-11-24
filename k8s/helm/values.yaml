@@ -1,0 +1,7 @@
+applicationname: nuscrape
+
+replicaCount: 1
+
+image:
+  repository: taskmedia/nuscrape
+  tag: "latest"

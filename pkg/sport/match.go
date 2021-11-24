@@ -4,9 +4,6 @@ import (
 	"time"
 )
 
-// Matches represents a slice of multiple Match structs.
-type Matches []Match
-
 // Match represents a nuLiga match (game)
 type Match struct {
 	// Date represents the date the match is scheduled
@@ -22,7 +19,7 @@ type Match struct {
 	LocationId int `json:"location"`
 
 	// Id represents the unique ID of the match
-	Id int `json:"id"`
+	Id int `json:"id" binding:"required"`
 
 	// Annotation represents the annotations deposited for a match
 	Annotation matchAnnotation `json:"annotation"`

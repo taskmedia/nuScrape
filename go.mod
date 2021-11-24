@@ -3,6 +3,7 @@ module github.com/taskmedia/nuScrape
 go 1.17
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/gin-gonic/gin v1.7.4
 	github.com/gocolly/colly v1.2.0
 	github.com/sirupsen/logrus v1.8.1
@@ -10,7 +11,6 @@ require (
 )
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/antchfx/htmlquery v1.2.4 // indirect
 	github.com/antchfx/xmlquery v1.3.8 // indirect
@@ -23,6 +23,7 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
@@ -31,6 +32,7 @@ require (
 	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
+	github.com/taskmedia/roundrobintournament v1.1.0 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect

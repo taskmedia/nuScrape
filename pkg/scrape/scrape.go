@@ -8,9 +8,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// scrapeTableResultset will scrape the requested website and searches for table.result-set object
-func scrape(u url.URL, htmlElement string) (colly.HTMLElement, error) {
-	var content colly.HTMLElement
+// scrapeTableResultset will scrape the requested website and searches for given objects
+// the return will be a map of collyHTMLElement where the key is the search string
+// this will enable to search multiple elements in one scrape
+func scrape(u url.URL, htmlElements ...string) (map[string]*colly.HTMLElement, error) {
+	content := make(map[string]*colly.HTMLElement)
 	var return_error error
 
 	c := colly.NewCollector(
@@ -21,9 +23,9 @@ func scrape(u url.URL, htmlElement string) (colly.HTMLElement, error) {
 		log.WithField("url", u).Debug("scraping url")
 	})
 
-	c.OnHTML(htmlElement, func(e *colly.HTMLElement) {
-		content = *e
-	})
+	for _, htmlEl := range htmlElements {
+		c.OnHTML(htmlEl, getHtmlCallback(htmlEl, content))
+	}
 
 	c.OnError(func(_ *colly.Response, err error) {
 		return_error = err
@@ -31,10 +33,19 @@ func scrape(u url.URL, htmlElement string) (colly.HTMLElement, error) {
 
 	c.Visit(u.String())
 
-	// check content object is empty
-	if content.Response == nil {
-		return_error = errors.New("scraping website was not successful")
+	if len(content) == 0 {
+		return nil, errors.New("no htmlElement could be found on the website")
+	} else if len(content) != len(htmlElements) {
+		return content, errors.New("not htmlElement could be found on the website")
 	}
 
 	return content, return_error
+}
+
+// getHtmlCallback will wrap selector and content variable into HTMLCallback function
+// otherwise the selector would not be present in the function
+func getHtmlCallback(selector string, content map[string]*colly.HTMLElement) colly.HTMLCallback {
+	return func(e *colly.HTMLElement) {
+		content[selector] = e
+	}
 }
