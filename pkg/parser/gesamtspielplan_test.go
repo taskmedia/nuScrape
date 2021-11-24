@@ -30,7 +30,8 @@ func TestGetMeetingReport(t *testing.T) {
 
 // test func parseGermanTime
 func TestParseGermanTime(t *testing.T) {
-	time_actual := parseGermanTime("09.10.2021", "19:15")
+	time_actual, err := parseGermanTime("09.10.2021", "19:15")
+	assert.Equal(t, nil, err, "expecting no error from parseGermanTime")
 	assert.Equal(t, 2021, time_actual.Year(), "expecting other value from year")
 	assert.Equal(t, time.October, time_actual.Month(), "expecting other value from mont")
 	assert.Equal(t, 9, time_actual.Day(), "expecting other value from day")
