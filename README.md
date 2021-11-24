@@ -44,7 +44,7 @@ The response will be e.g.:
 {
     "matches": [
         {
-            "date": "2021-10-09T19:15:00Z",
+            "date": "2021-10-09T19:15:00+02:00",
             "team": {
                 "home": "TV Memmingen",
                 "guest": "TSV Ottobeuren III"
