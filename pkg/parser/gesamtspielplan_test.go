@@ -37,6 +37,18 @@ func TestParseGermanTime(t *testing.T) {
 	assert.Equal(t, 9, testTime.Day(), "expecting other value from day")
 	assert.Equal(t, 19, testTime.Hour(), "expecting other value from hour")
 	assert.Equal(t, 15, testTime.Minute(), "expecting other value from minute")
+
+	testTime, err = parseGermanTime("11.11.2021", "19:30")
+	if err != nil {
+		assert.Equal(t, nil, err, "expecting no error from parseGermanTime CET")
+	}
+	assert.Equal(t, "2021-11-11 19:30:00 +0100 CET", testTime.String(), "expected CET time not matching")
+
+	testTime, err = parseGermanTime("12.08.2021", "19:30")
+	if err != nil {
+		assert.Equal(t, nil, err, "expecting no error from parseGermanTime CEST")
+	}
+	assert.Equal(t, "2021-08-12 19:30:00 +0200 CEST", testTime.String(), "expected CEST time not matching")
 }
 
 // test func standardizeSpaces
