@@ -2,7 +2,6 @@ package parser
 
 import (
 	"errors"
-	"fmt"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -125,7 +124,15 @@ func ParseGesamtspielplanTable(html *colly.HTMLElement) ([]sport.Match, error) {
 			case 2 + dateNotAvailable:
 				match := regexp.MustCompile(`\d{2}:\d{2}`).FindStringSubmatch(t)
 				if len(match) >= 1 {
-					m.Date = parseGermanTime(cachedDate, match[0])
+					matchDate, err := parseGermanTime(cachedDate, match[0])
+					if err != nil {
+						log.WithFields(log.Fields{
+							"date":  cachedDate,
+							"time":  match[0],
+							"error": err,
+						}).Warning("can not parse date/time")
+					}
+					m.Date = matchDate
 				}
 
 				// check if date annotation is available
@@ -226,17 +233,44 @@ func getMeetingReport(html_element *goquery.Selection) (int, bool) {
 
 // func parseGermanTime will use the given time format from nuLiga and parse it into Time
 // warning: the time will have not timezone information
-func parseGermanTime(d, t string) time.Time {
+func parseGermanTime(d, t string) (time.Time, error) {
 	split_date := strings.Split(d, ".")
 
-	datetimeFormatted := fmt.Sprintf("%s-%s-%sT%s:00.000Z", split_date[2], split_date[1], split_date[0], t)
-
-	dt, err := time.Parse(time.RFC3339, datetimeFormatted)
+	year, err := strconv.Atoi(split_date[2])
 	if err != nil {
-		fmt.Println(err)
+		return time.Time{}, errors.New("could not parse year from date " + d)
 	}
 
-	return dt
+	mont_int, err := strconv.Atoi(split_date[1])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse month from date " + d)
+	}
+	month := time.Month(mont_int)
+
+	day, err := strconv.Atoi(split_date[0])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse day from date " + d)
+	}
+
+	split_time := strings.Split(t, ":")
+
+	hour, err := strconv.Atoi(split_time[0])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse hour from time " + t)
+	}
+
+	minute, err := strconv.Atoi(split_time[1])
+	if err != nil {
+		return time.Time{}, errors.New("could not parse minute from time " + t)
+	}
+
+	timeLocation, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		log.Fatal(err)
+	}
+	timeInUtc := time.Date(year, month, day, hour, minute, 0, 0, timeLocation)
+
+	return timeInUtc, nil
 }
 
 // func parseResult will parse the input from  result column and parse it to different information
