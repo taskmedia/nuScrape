@@ -53,16 +53,16 @@ func TestParseGermanTime(t *testing.T) {
 
 // test func standardizeSpaces
 func TestStandardizeSpaces(t *testing.T) {
-	testMap := make(map[string]string)
-
-	testMap["Hello World"] = " Hello    World"
-	testMap["Hello nuLiga"] = " Hello 		   nuLiga  	"
-	testMap["hello"] = "	hello	"
-	testMap["09.10.2021"] = `
+	testStandardize := map[string]string{
+		"Hello World": " Hello    World",
+		"Hello nuLiga": " Hello 		   nuLiga  	",
+		"hello": "	hello	",
+		"09.10.2021": `
 	            09.10.2021
-	          `
+	          `,
+	}
 
-	for expected, actual := range testMap {
+	for expected, actual := range testStandardize {
 		assert.Equal(t, expected, standardizeSpaces(actual), "standardize space not removing spaces as expected")
 	}
 }
