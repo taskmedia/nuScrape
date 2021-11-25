@@ -12,11 +12,11 @@ type Group int
 func New(groupString string) (Group, error) {
 	g, err := strconv.Atoi(groupString)
 	if err != nil {
-		return -1, errors.New("group not an integer")
+		return 0, errors.New("group not an integer")
 	}
 
 	if g <= 0 {
-		return -1, errors.New("group not a positive integer")
+		return 0, errors.New("group not a positive integer")
 	}
 
 	return Group(g), nil

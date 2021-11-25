@@ -217,18 +217,18 @@ func getMeetingReport(html_element *goquery.Selection) (int, bool) {
 		q, err := url.ParseQuery(ln)
 		if err != nil {
 			log.WithField("html_element", html_element).Warning("could not parse meeting report")
-			return -1, false
+			return 0, false
 		}
 
 		id, err := strconv.Atoi(q["meeting"][0])
 		if err != nil {
 			log.WithField("query", q).Warning("could not convert meeting id to integer")
-			return -1, false
+			return 0, false
 		}
 
 		return id, true
 	}
-	return -1, false
+	return 0, false
 }
 
 // func parseGermanTime will use the given time format from nuLiga and parse it into Time
@@ -276,8 +276,8 @@ func parseGermanTime(d, t string) (time.Time, error) {
 // func parseResult will parse the input from  result column and parse it to different information
 // this field has not only the goals inside. also an annotation and the referees can be available.
 func parseResult(resultString string, html_element *goquery.Selection) (int, int, string, []string, error) {
-	home := -1
-	guest := -1
+	home := 0
+	guest := 0
 	annotation := ""
 	var referee []string
 
