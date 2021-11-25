@@ -25,7 +25,7 @@ func TestGetMeetingReport(t *testing.T) {
 	id, ok = getMeetingReport(doc.Find("html"))
 
 	assert.Equal(t, false, ok, "expecting that id was not found")
-	assert.Equal(t, -1, id, "expecting different id from meeting report")
+	assert.Equal(t, 0, id, "expecting different id from meeting report")
 }
 
 // test func parseGermanTime
