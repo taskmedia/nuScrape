@@ -305,7 +305,12 @@ func parseResult(resultString string, html_element *goquery.Selection) (int, int
 		// this may be the case if the match has not yet taken place
 		attr, isAttr := html_element.Find("span").Attr("title")
 		if isAttr {
-			referee = strings.Split(attr, "/")
+			refSlice := strings.Split(attr, "/")
+			// remove whitespace from referees
+			for i := range refSlice {
+				refSlice[i] = strings.TrimSpace(refSlice[i])
+			}
+			referee = refSlice
 		}
 	}
 
