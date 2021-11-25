@@ -28,7 +28,7 @@ func (r Relay) GetAbbreviation() string {
 	}
 
 	// check if no ID is provided
-	if r.Id == 0 || r.Id == -1 {
+	if r.Id == 0 {
 		return r.Name.GetAbbreviation()
 	}
 
@@ -43,7 +43,7 @@ func (r Relay) GetName() string {
 	}
 
 	// check if no ID is provided
-	if r.Id == 0 || r.Id == -1 {
+	if r.Id == 0 {
 		return r.Name.GetName()
 	}
 
@@ -54,7 +54,7 @@ func (r Relay) GetName() string {
 // it tries to convert different styles of relays to a Relay type
 func Parse(s string) (Relay, error) {
 	searchString := unifyString(s)
-	classNumber := -1
+	classNumber := 0
 
 	// check if number
 	re := re_relayNumber.FindStringSubmatch(searchString)
