@@ -6,8 +6,91 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gocolly/colly"
 	"github.com/stretchr/testify/assert"
+	"github.com/taskmedia/nuScrape/pkg/sport/ageCategory"
+	"github.com/taskmedia/nuScrape/pkg/sport/class"
+	"github.com/taskmedia/nuScrape/pkg/sport/relay"
+	"github.com/taskmedia/nuScrape/pkg/sport/relay/relayName"
 )
+
+// struct for testing func ParseGesamtspielplanInfo
+// this struct will represent different values used for one test
+type testStructParseGesamtspielplanInfo struct {
+	html        string
+	ageCategory ageCategory.AgeCategory
+	class       class.Class
+	relay       relay.Relay
+	err         error
+}
+
+// test func parseGesamtspielplanInfo
+func TestParseGesamtspielplanInfo(t *testing.T) {
+	testGspInfo := []testStructParseGesamtspielplanInfo{
+		testStructParseGesamtspielplanInfo{
+			html: `<div id="content-col1">
+  <h1>
+    Alpenvorland 2021/22
+    <br>
+    Bezirksklasse Männer Staffel Nord-West
+    <br>
+    Tabelle und Spielplan (Aktuell)
+  </h1>
+      <h2>Schiedsrichterkosten</h2>
+      <p>
+        <label>Durchschnitt Staffel:</label> 36,68 €
+      </p>
+</div>`,
+			ageCategory: ageCategory.AgeCategory{Sex: "m", Age: ""},
+			class:       class.BZK,
+			relay:       relay.Relay{Name: relayName.NW, Id: 0},
+			err:         nil,
+		},
+		testStructParseGesamtspielplanInfo{
+			html:        `<div id="content-col1"><h1>BHV 2021/22<br>ÜBOL wC-Jgd. Südwest 1<br>Tabelle und Spielplan (Aktuell)</h1></div>`,
+			ageCategory: ageCategory.AgeCategory{Sex: "w", Age: "C"},
+			class:       class.UeBOL,
+			relay:       relay.Relay{Name: relayName.SW, Id: 1},
+			err:         nil,
+		},
+		testStructParseGesamtspielplanInfo{
+			html:        `<div id="content-col1"><h1>BHV 2021/22<br>Bayernliga männliche A-Jugend Nordwest<br>Tabelle und Spielplan (Aktuell)</h1></div>`,
+			ageCategory: ageCategory.AgeCategory{Sex: "m", Age: "A"},
+			class:       class.BL,
+			relay:       relay.Relay{Name: relayName.NW, Id: 0},
+			err:         nil,
+		},
+		testStructParseGesamtspielplanInfo{
+			html:        `<div id="content-col1"><h1>Schwaben 2021/22<br>Bezirksliga Frauen<br>Spielplan (gesamt)</h1></div>`,
+			ageCategory: ageCategory.AgeCategory{Sex: "w", Age: ""},
+			class:       class.BZL,
+			relay:       relay.Relay{Name: "", Id: 0},
+			err:         nil,
+		},
+		testStructParseGesamtspielplanInfo{
+			html:        `<div id="content-col1"><h1>Schwaben 2021/22<br>Bezirksoberliga Männer - Staffel A<br>Tabelle und Spielplan (Aktuell)</h1></div>`,
+			ageCategory: ageCategory.AgeCategory{Sex: "m", Age: ""},
+			class:       class.BOL,
+			relay:       relay.Relay{Name: "A", Id: 0},
+			err:         nil,
+		},
+	}
+
+	for _, result := range testGspInfo {
+		doc, _ := goquery.NewDocumentFromReader(strings.NewReader((result.html)))
+		sel := doc.Find("div#content-col1").First()
+		htmlElement := colly.HTMLElement{
+			DOM: sel,
+		}
+
+		ac, c, r, err := ParseGesamtspielplanInfo(&htmlElement)
+		assert.Equal(t, result.ageCategory, ac, "expected other ageCategory from html '%s'", result.html)
+		assert.Equal(t, result.class, c, "expected other class from html '%s'", result.html)
+		assert.Equal(t, result.relay, r, "expected other relay from html '%s'", result.html)
+		assert.Equal(t, result.err, err, "expected other error from html '%s'", result.html)
+	}
+
+}
 
 // test func getMeetingReport
 func TestGetMeetingReport(t *testing.T) {
