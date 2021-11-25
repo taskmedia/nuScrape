@@ -53,7 +53,7 @@ func TestParseGermanTime(t *testing.T) {
 
 // struct for testing func ParseResult
 // this struct will represent different values used for one test
-type parseResultTestresults struct {
+type testStructParseResult struct {
 	html       string
 	expected   string
 	goalsHome  int
@@ -65,26 +65,26 @@ type parseResultTestresults struct {
 
 // test func ParseResult
 func TestParseResult(t *testing.T) {
-	testResults := []parseResultTestresults{
-		parseResultTestresults{
+	testResults := []testStructParseResult{
+		testStructParseResult{
 			html: `<div id="wrapper"><span alt="10:9 zur Halbzeit" title="11:12 zur Halbzeit">  22:24  	 </span></div>`,
 			goalsHome:  22,
 			goalsGuest: 24,
 		},
-		parseResultTestresults{
+		testStructParseResult{
 			html:    `<div id="wrapper"><span title="Mustermann Max">Must.</span></div>`,
 			referee: []string{"Mustermann Max"},
 		},
-		parseResultTestresults{
+		testStructParseResult{
 			html:    `<div id="wrapper"><span title="Doe John / Nordmann Ola">Doe/Nord.</span></div>`,
 			referee: []string{"Doe John", "Nordmann Ola"},
 		},
-		parseResultTestresults{
+		testStructParseResult{
 			html:       `<div id="wrapper"><span><span>0:0</span></span></div>`,
 			goalsHome:  0,
 			goalsGuest: 0,
 		},
-		parseResultTestresults{
+		testStructParseResult{
 			html: `<div id="wrapper">
           
            
@@ -93,7 +93,7 @@ func TestParseResult(t *testing.T) {
           
         </div>`,
 		},
-		parseResultTestresults{
+		testStructParseResult{
 			// workaround for test - using div directly instead of td
 			html:       `<div id="wrapper" alt="Wertung gegen Gastmannschaft" class="center" title="Wertung gegen Gastmannschaft">WG</div>`,
 			annotation: "Wertung gegen Gastmannschaft",
