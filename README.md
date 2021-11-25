@@ -74,7 +74,7 @@ The response will be e.g.:
     "class": "Bezirksklasse",
     "relay": {
         "Name": "Nord-West",
-        "Id": -1
+        "Id": 0
     }
 }
 ```
