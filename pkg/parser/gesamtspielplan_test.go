@@ -79,6 +79,25 @@ func TestParseResult(t *testing.T) {
 			html:    `<div id="wrapper"><span title="Doe John / Nordmann Ola">Doe/Nord.</span></div>`,
 			referee: []string{"Doe John", "Nordmann Ola"},
 		},
+		parseResultTestresults{
+			html:       `<div id="wrapper"><span><span>0:0</span></span></div>`,
+			goalsHome:  0,
+			goalsGuest: 0,
+		},
+		parseResultTestresults{
+			html: `<div id="wrapper">
+          
+           
+	          
+          	&nbsp;
+          
+        </div>`,
+		},
+		parseResultTestresults{
+			// workaround for test - using div directly instead of td
+			html:       `<div id="wrapper" alt="Wertung gegen Gastmannschaft" class="center" title="Wertung gegen Gastmannschaft">WG</div>`,
+			annotation: "Wertung gegen Gastmannschaft",
+		},
 	}
 
 	for _, result := range testResults {
