@@ -51,6 +51,51 @@ func TestParseGermanTime(t *testing.T) {
 	assert.Equal(t, "2021-08-12 19:30:00 +0200 CEST", testTime.String(), "expected CEST time not matching")
 }
 
+// struct for testing func ParseResult
+// this struct will represent different values used for one test
+type parseResultTestresults struct {
+	html       string
+	expected   string
+	goalsHome  int
+	goalsGuest int
+	annotation string
+	referee    []string
+	err        error
+}
+
+// test func ParseResult
+func TestParseResult(t *testing.T) {
+	testResults := []parseResultTestresults{
+		parseResultTestresults{
+			html: `<div id="wrapper"><span alt="10:9 zur Halbzeit" title="11:12 zur Halbzeit">  22:24  	 </span></div>`,
+			goalsHome:  22,
+			goalsGuest: 24,
+		},
+		parseResultTestresults{
+			html:    `<div id="wrapper"><span title="Mustermann Max">Must.</span></div>`,
+			referee: []string{"Mustermann Max"},
+		},
+		parseResultTestresults{
+			html:    `<div id="wrapper"><span title="Doe John / Nordmann Ola">Doe/Nord.</span></div>`,
+			referee: []string{"Doe John", "Nordmann Ola"},
+		},
+	}
+
+	for _, result := range testResults {
+		doc, _ := goquery.NewDocumentFromReader(strings.NewReader((result.html)))
+		sel := doc.Find("div#wrapper").First()
+		text := standardizeSpaces(sel.Text())
+
+		goalsHome, goalsGuest, annotation, referee, err := parseResult(text, sel)
+		assert.Equal(t, result.goalsHome, goalsHome, "expected other goalsHome from html '%s'", result.html)
+		assert.Equal(t, result.goalsGuest, goalsGuest, "expected other goalsGuest from html '%s'", result.html)
+		assert.Equal(t, result.annotation, annotation, "expected other annotation from html '%s'", result.html)
+		assert.Equal(t, result.referee, referee, "expected other referee from html '%s'", result.html)
+		assert.Equal(t, result.err, err, "expected other err from html '%s'", result.html)
+	}
+
+}
+
 // test func standardizeSpaces
 func TestStandardizeSpaces(t *testing.T) {
 	testStandardize := map[string]string{
