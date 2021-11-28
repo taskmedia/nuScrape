@@ -100,17 +100,19 @@ func TestParseGesamtspielplanInfo(t *testing.T) {
 // test func parseGesamtspielplanTable
 func TestParseGesamtspielplanTable(t *testing.T) {
 	var testFiles []string
+	// create slice of test files
 	filepath.WalkDir("test/", func(s string, d fs.DirEntry, e error) error {
 		if e != nil {
 			t.Error("could not find test directory")
 		}
 
-		if filepath.Ext(d.Name()) == ".html" {
+		if filepath.Ext(d.Name()) == ".test_html" {
 			testFiles = append(testFiles, s)
 		}
 		return nil
 	})
 
+	// iterate through test files
 	for _, tf := range testFiles {
 		html, err := os.ReadFile(tf)
 		if err != nil {
@@ -130,7 +132,7 @@ func TestParseGesamtspielplanTable(t *testing.T) {
 		matchesJson, _ := json.Marshal(matches)
 
 		// load structs from JSON to compare against
-		tf_json := strings.Replace(tf, ".html", ".json", 1)
+		tf_json := strings.Replace(tf, ".test_html", ".test_json", 1)
 		correctMatchesJson, err := os.ReadFile(tf_json)
 		if err != nil {
 			t.Error("could not read testfile (JSON)")
