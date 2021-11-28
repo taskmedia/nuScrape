@@ -1,6 +1,11 @@
 package parser
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -90,6 +95,56 @@ func TestParseGesamtspielplanInfo(t *testing.T) {
 		assert.Equal(t, result.err, err, "expected other error from html '%s'", result.html)
 	}
 
+}
+
+// test func parseGesamtspielplanTable
+func TestParseGesamtspielplanTable(t *testing.T) {
+	var testFiles []string
+	filepath.WalkDir("test/", func(s string, d fs.DirEntry, e error) error {
+		if e != nil {
+			t.Error("could not find test directory")
+		}
+
+		if filepath.Ext(d.Name()) == ".html" {
+			testFiles = append(testFiles, s)
+		}
+		return nil
+	})
+
+	for _, tf := range testFiles {
+		html, err := os.ReadFile(tf)
+		if err != nil {
+			t.Error("could not read testfile (HTML)")
+		}
+
+		// generate htmlElement as function input
+		doc, _ := goquery.NewDocumentFromReader(strings.NewReader(string(html)))
+		sel := doc.Find("table.result-set").First()
+		htmlElement := colly.HTMLElement{
+			DOM: sel,
+		}
+
+		matches, err := ParseGesamtspielplanTable(&htmlElement)
+
+		// convert sport.Matches struct to JSON to be able to compare
+		matchesJson, _ := json.Marshal(matches)
+
+		// load structs from JSON to compare against
+		tf_json := strings.Replace(tf, ".html", ".json", 1)
+		correctMatchesJson, err := os.ReadFile(tf_json)
+		if err != nil {
+			t.Error("could not read testfile (JSON)")
+		}
+
+		// this can be enabled if a test file was added.
+		// it will generate the JSON to compare against
+		// os.WriteFile(tf_json, matchesJson, 0644)
+
+		// compare parsed matches agains matches from JSON file
+		if string(matchesJson) != string(correctMatchesJson) {
+			t.Error(fmt.Sprintf("compare of %s with %s was not successful", tf, tf_json))
+		}
+	}
 }
 
 // test func getMeetingReport
