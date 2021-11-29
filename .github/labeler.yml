@@ -1,6 +1,6 @@
 # add 'documentation' label to any changes in docs directory
 documentation:
-  - "README.md"
+  - "**/README.md"
 
 # add 'test' label to any changes related to go test
 test:
@@ -10,4 +10,4 @@ test:
 docker-k8s:
   - Dockerfile
   - docker-compose.yml
-  - k8s/
+  - k8s/**/*
