@@ -2,6 +2,8 @@ package sport
 
 import (
 	"time"
+
+	"github.com/taskmedia/nuScrape/pkg/sport/annotationResult"
 )
 
 // Match represents a nuLiga match (game)
@@ -39,7 +41,7 @@ type matchAnnotation struct {
 
 	// Result represents matchAnntations dedicated to the result of a Match
 	// e.g. a judging by the referees
-	Result string `json:"result"`
+	Result annotationResult.AnnotationResult `json:"result"`
 }
 
 // matchTeam represents the teams participating in the match

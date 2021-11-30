@@ -13,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/taskmedia/nuScrape/pkg/sport"
 	"github.com/taskmedia/nuScrape/pkg/sport/ageCategory"
+	"github.com/taskmedia/nuScrape/pkg/sport/annotationResult"
 	"github.com/taskmedia/nuScrape/pkg/sport/class"
 	"github.com/taskmedia/nuScrape/pkg/sport/relay"
 )
@@ -275,18 +276,22 @@ func parseGermanTime(d, t string) (time.Time, error) {
 
 // func parseResult will parse the input from  result column and parse it to different information
 // this field has not only the goals inside. also an annotation and the referees can be available.
-func parseResult(resultString string, html_element *goquery.Selection) (int, int, string, []string, error) {
+func parseResult(resultString string, html_element *goquery.Selection) (int, int, annotationResult.AnnotationResult, []string, error) {
 	home := 0
 	guest := 0
-	annotation := ""
+	var annotation annotationResult.AnnotationResult
 	var referee []string
 
-	if regexp.MustCompile(`(WH|WG|NH|NG|ZH|ZG)`).MatchString(resultString) {
+	if regexp.MustCompile(annotationResult.RegexAnnotations).MatchString(resultString) {
 		// check if result annotation is available
 		// this may be the case if e.g. the game has been postponed
 		attr, isAttr := html_element.Attr("alt")
 		if isAttr {
-			annotation = attr
+			a, err := annotationResult.Parse(attr)
+			if err != nil {
+				return home, guest, annotation, referee, errors.New("could not parse annotationResult")
+			}
+			annotation = a
 		}
 	} else if regexp.MustCompile(`\d{1,2}:\d{1,2}`).MatchString(resultString) {
 		// check if result is available
