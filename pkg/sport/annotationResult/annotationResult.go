@@ -25,7 +25,7 @@ const (
 	Annotation_ZG = AnnotationResult("Gastmannschaft zurückgezogen")
 
 	// regex of allowed annotation abbreviations
-	RegexAnnotations = `(v|u|h|t|NH|NG|N2|WH|WG|W2|U|ZH|ZG)`
+	RegexAnnotations = `^(v|u|h|t|NH|NG|N2|WH|WG|W2|U|ZH|ZG)$`
 )
 
 // func GetAbbreviation returns short name of a annotationResult
