@@ -14,6 +14,7 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/stretchr/testify/assert"
 	"github.com/taskmedia/nuScrape/pkg/sport/ageCategory"
+	"github.com/taskmedia/nuScrape/pkg/sport/annotationResult"
 	"github.com/taskmedia/nuScrape/pkg/sport/class"
 	"github.com/taskmedia/nuScrape/pkg/sport/relay"
 	"github.com/taskmedia/nuScrape/pkg/sport/relay/relayName"
@@ -236,7 +237,7 @@ func TestParseResult(t *testing.T) {
 		testStructParseResult{
 			// workaround for test - using div directly instead of td
 			html:       `<div id="wrapper" alt="Wertung gegen Gastmannschaft" class="center" title="Wertung gegen Gastmannschaft">WG</div>`,
-			annotation: "Wertung gegen Gastmannschaft",
+			annotation: string(annotationResult.Annotation_WG),
 		},
 	}
 
@@ -248,7 +249,7 @@ func TestParseResult(t *testing.T) {
 		goalsHome, goalsGuest, annotation, referee, err := parseResult(text, sel)
 		assert.Equal(t, result.goalsHome, goalsHome, "expected other goalsHome from html '%s'", result.html)
 		assert.Equal(t, result.goalsGuest, goalsGuest, "expected other goalsGuest from html '%s'", result.html)
-		assert.Equal(t, result.annotation, annotation, "expected other annotation from html '%s'", result.html)
+		assert.Equal(t, result.annotation, string(annotation), "expected other annotation from html '%s'", result.html)
 		assert.Equal(t, result.referee, referee, "expected other referee from html '%s'", result.html)
 		assert.Equal(t, result.err, err, "expected other err from html '%s'", result.html)
 	}
