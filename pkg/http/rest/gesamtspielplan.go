@@ -25,21 +25,21 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		param_group := c.Param("group")
 
 		// validate parameters
-		season, err := season.New(param_season)
+		s, err := season.New(param_season)
 		if err != nil {
 			log.WithField("season", param_season).Warning(err)
 			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
-		champ, err := championship.ParseAbbreviation(param_championship)
+		ch, err := championship.ParseAbbreviation(param_championship)
 		if err != nil {
 			log.WithField("championship", param_championship).Warning(err.Error())
 			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
-		group, err := group.New(param_group)
+		g, err := group.New(param_group)
 		if err != nil {
 			log.WithField("group", param_group).Warning(err)
 			c.String(http.StatusBadRequest, err.Error())
@@ -47,12 +47,12 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		// get data from scrapper
-		htmlInfo_scrape, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(season, champ, group)
+		htmlInfo_scrape, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(s, ch, g)
 		if err != nil {
 			log.WithFields(log.Fields{
-				"season":       season,
-				"championship": champ,
-				"group":        group,
+				"season":       s,
+				"championship": ch,
+				"group":        g,
 				"scrape_info":  htmlInfo_scrape,
 				"scrape_table": htmlTable_scrape,
 			},
@@ -61,14 +61,14 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 			return
 		}
 
-		ageCategory, class, relay, err := parser.ParseGesamtspielplanInfo(htmlInfo_scrape)
+		ac, cl, r, err := parser.ParseGesamtspielplanInfo(htmlInfo_scrape)
 		if err != nil {
 			err_msg := "parsing of gesamtspielplan info failed"
 			log.WithFields(log.Fields{
 				"html_scrape": htmlInfo_scrape.DOM.Text(),
-				"ageCategory": ageCategory,
-				"class":       class,
-				"relay":       relay,
+				"ageCategory": ac,
+				"class":       cl,
+				"relay":       r,
 				"err":         err,
 			}).Warning(err_msg)
 			c.String(http.StatusInternalServerError, err_msg)
@@ -89,16 +89,16 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		gsp := sport.Gesamtspielplan{
-			Season:       season,
-			Championship: champ,
-			Group:        group,
+			Season:       s,
+			Championship: ch,
+			Group:        g,
 			Matches:      matches,
 		}
 
 		// add Gesamtspielplan info to gsp
-		gsp.AgeCategory = ageCategory
-		gsp.Class = class
-		gsp.Relay = relay
+		gsp.AgeCategory = ac
+		gsp.Class = cl
+		gsp.Relay = r
 
 		// return matches as JSON
 		c.Writer.Header().Set("Content-Type", "application/json")
