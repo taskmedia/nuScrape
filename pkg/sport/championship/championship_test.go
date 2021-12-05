@@ -1,4 +1,4 @@
-package sport
+package championship
 
 import (
 	"testing"

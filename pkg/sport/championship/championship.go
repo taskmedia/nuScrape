@@ -1,4 +1,4 @@
-package sport
+package championship
 
 // Allowed championship for BHV
 var championshipAbb = [...]string{
