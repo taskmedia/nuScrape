@@ -1,6 +1,8 @@
 package sport
 
 import (
+	"errors"
+	"net/url"
 	"strconv"
 	"time"
 
@@ -96,4 +98,24 @@ func (m Match) GetDescription() string {
 	}
 
 	return desc
+}
+
+// func GetReportUrl will return a URL if a Report is available
+func (m Match) GetReportUrl() (url.URL, error) {
+	u := url.URL{}
+
+	if m.ReportId == 0 {
+		return u, errors.New("no report available")
+	}
+
+	u.Scheme = "https"
+	u.Host = "bhv-handball.liga.nu"
+	u.Path = "/cgi-bin/WebObjects/nuLigaDokumentHBDE.woa/wa/nuDokument"
+
+	query := url.Values{}
+	query.Add("dokument", "meetingReportHB")
+	query.Add("meeting", strconv.Itoa(m.ReportId))
+	u.RawQuery = query.Encode()
+
+	return u, nil
 }
