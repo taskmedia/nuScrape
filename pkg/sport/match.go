@@ -1,6 +1,7 @@
 package sport
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/taskmedia/nuScrape/pkg/sport/annotationResult"
@@ -60,4 +61,39 @@ type matchGoal struct {
 
 	// Guest represents the achieved goals of the guest team
 	Guest int `json:"guest"`
+}
+
+// func GetDescription will return a formatted description (multi line) of the match
+func (m Match) GetDescription() string {
+	// `Liga: %s
+	// Klasse: %s
+	// Altersklasse:
+
+	desc := ""
+	desc += "Heim: " + m.Team.Home + "\n"
+	desc += "Gast: " + m.Team.Guest + "\n"
+	if m.Goal.Home != 0 {
+		desc += "Ergebnis: " + strconv.Itoa(m.Goal.Home) + ":" + strconv.Itoa(m.Goal.Guest) + "\n"
+	}
+	desc += "Spielnummer: " + strconv.Itoa(m.Id) + "\n"
+	if m.LocationId != 0 {
+		desc += "Hallennummer: " + strconv.Itoa(m.LocationId) + "\n"
+	}
+	if m.Referee != nil {
+		desc += "Schiedsrichter:\n"
+		for _, ref := range m.Referee {
+			desc += "  - " + ref + "\n"
+		}
+	}
+	if m.Annotation.Date != "" || m.Annotation.Result != "" {
+		desc += "Anmerkungen:\n"
+		if m.Annotation.Date != "" {
+			desc += "  - " + m.Annotation.Date + "\n"
+		}
+		if m.Annotation.Result != "" {
+			desc += "  - " + m.Annotation.Result.GetName() + "\n"
+		}
+	}
+
+	return desc
 }
