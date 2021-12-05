@@ -56,4 +56,12 @@ func TestParse(t *testing.T) {
 		assert.Equal(t, expected, c, "Expected other constant from parsing relay from value %s", check)
 		assert.Equal(t, nil, err, "Expected no error from parsing relay from value %s", check)
 	}
+
+	// test for error
+	_, err := Parse("unknown-type")
+	if err == nil {
+		t.Error("expected string `unknown-type` not be able to be parsed")
+	} else {
+		assert.Equal(t, "could not parse relayName type (unknown)", err.Error(), "expected string `unknown-type` not output different error")
+	}
 }
