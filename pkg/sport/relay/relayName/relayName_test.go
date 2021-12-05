@@ -39,8 +39,8 @@ func TestGetAbbreviation(t *testing.T) {
 
 // Test func GetName if it returns the correct full name of a relayName
 func TestGetName(t *testing.T) {
-	assert.Equal(t, "Nord", N.GetName(), "expected other full name form relayName N")
-	assert.Equal(t, "Süd-West", SW.GetName(), "expected other full name form relayName SW")
-	assert.Equal(t, "Mitte", M.GetName(), "expected other full name form relayName M")
-	assert.Equal(t, "B", B.GetName(), "expected other full name form relayName B")
+	assert.Equal(t, "Nord", N.GetName(), "expected other full name from relayName N")
+	assert.Equal(t, "Süd-West", SW.GetName(), "expected other full name from relayName SW")
+	assert.Equal(t, "Mitte", M.GetName(), "expected other full name from relayName M")
+	assert.Equal(t, "B", B.GetName(), "expected other full name from relayName B")
 }

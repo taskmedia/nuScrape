@@ -32,8 +32,8 @@ func TestGetAbbreviation(t *testing.T) {
 
 // Test func GetName if it returns the correct full name of a class
 func TestGetName(t *testing.T) {
-	assert.Equal(t, "Bayernliga", BL.GetName(), "expected other full name form class BL")
-	assert.Equal(t, "Landesliga", LL.GetName(), "expected other full name form class LL")
-	assert.Equal(t, "Bezirksoberliga", BOL.GetName(), "expected other full name form class BOL")
-	assert.Equal(t, "Übergreifende Bezirksliga", UeBL.GetName(), "expected other full name form class UeBL")
+	assert.Equal(t, "Bayernliga", BL.GetName(), "expected other full name from class BL")
+	assert.Equal(t, "Landesliga", LL.GetName(), "expected other full name from class LL")
+	assert.Equal(t, "Bezirksoberliga", BOL.GetName(), "expected other full name from class BOL")
+	assert.Equal(t, "Übergreifende Bezirksliga", UeBL.GetName(), "expected other full name from class UeBL")
 }

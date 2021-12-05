@@ -34,9 +34,9 @@ func TestGetAbbreviation(t *testing.T) {
 
 // Test func GetName if it returns the correct full name of a annotationResult
 func TestGetName(t *testing.T) {
-	assert.Equal(t, "Spiel wird in/auf noch unbekannte/n Halle/Termin verlegt", Annotation_u.GetName(), "expected other full name form annotationResult u")
-	assert.Equal(t, "Begegnung wurde umgewertet", Annotation_U.GetName(), "expected other full name form annotationResult U")
-	assert.Equal(t, "Heimmannschaft nicht angegreten", Annotation_NH.GetName(), "expected other full name form annotationResult NH")
-	assert.Equal(t, "Wertung gegen Heimmannschaft", Annotation_WH.GetName(), "expected other full name form annotationResult WH")
-	assert.Equal(t, "Heimmannschaft zurückgezogen", Annotation_ZH.GetName(), "expected other full name form annotationResult ZH")
+	assert.Equal(t, "Spiel wird in/auf noch unbekannte/n Halle/Termin verlegt", Annotation_u.GetName(), "expected other full name from annotationResult u")
+	assert.Equal(t, "Begegnung wurde umgewertet", Annotation_U.GetName(), "expected other full name from annotationResult U")
+	assert.Equal(t, "Heimmannschaft nicht angegreten", Annotation_NH.GetName(), "expected other full name from annotationResult NH")
+	assert.Equal(t, "Wertung gegen Heimmannschaft", Annotation_WH.GetName(), "expected other full name from annotationResult WH")
+	assert.Equal(t, "Heimmannschaft zurückgezogen", Annotation_ZH.GetName(), "expected other full name from annotationResult ZH")
 }
