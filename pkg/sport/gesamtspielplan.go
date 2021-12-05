@@ -42,7 +42,8 @@ func (gsp Gesamtspielplan) GetDistinctTeams() []string {
 // func GetDescription will return a formatted description (multi line) of the GSP (without matches)
 func (gsp Gesamtspielplan) GetDescription() string {
 	desc := ""
-	desc += "Liga: " + gsp.Championship.GetName() + " - " + gsp.Class.GetName() + " " + gsp.Relay.GetName() + "\n"
+	desc += "Liga: " + gsp.Championship.GetName() + "\n"
+	desc += "Klasse: " + gsp.Class.GetName() + " " + gsp.Relay.GetName() + "\n"
 	desc += "Gruppennummer: " + gsp.Group.String() + "\n"
 	desc += "Altersklasse: " + gsp.AgeCategory.GetName() + "\n"
 	desc += "Saison: " + string(gsp.Season) + "\n"
