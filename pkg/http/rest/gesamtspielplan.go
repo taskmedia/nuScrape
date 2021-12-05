@@ -9,6 +9,7 @@ import (
 	"github.com/taskmedia/nuScrape/pkg/parser"
 	"github.com/taskmedia/nuScrape/pkg/scrape"
 	"github.com/taskmedia/nuScrape/pkg/sport"
+	"github.com/taskmedia/nuScrape/pkg/sport/championship"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
@@ -20,7 +21,7 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 	engine.GET("/rest/v1/gesamtspielplan/:season/:championship/:group", func(c *gin.Context) {
 		// get rest parameters
 		param_season := c.Param("season")
-		championship := c.Param("championship")
+		param_championship := c.Param("championship")
 		param_group := c.Param("group")
 
 		// validate parameters
@@ -31,10 +32,10 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 			return
 		}
 
-		if !sport.ValidateChampionshipAbb(championship) {
-			msg := "The given championship abbreviation is invalid"
-			log.WithField("championship", championship).Warning(msg)
-			c.String(http.StatusBadRequest, msg)
+		champ, err := championship.ParseAbbreviation(param_championship)
+		if err != nil {
+			log.WithField("championship", param_championship).Warning(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -46,11 +47,11 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 		}
 
 		// get data from scrapper
-		htmlInfo_scrape, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(season, championship, group)
+		htmlInfo_scrape, htmlTable_scrape, err := scrape.ScrapeGesamtspielplan(season, champ, group)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"season":       season,
-				"championship": championship,
+				"championship": champ,
 				"group":        group,
 				"scrape_info":  htmlInfo_scrape,
 				"scrape_table": htmlTable_scrape,
@@ -89,7 +90,7 @@ func addRouterGesamtspielplan(engine *gin.Engine) {
 
 		gsp := sport.Gesamtspielplan{
 			Season:       season,
-			Championship: championship,
+			Championship: champ,
 			Group:        group,
 			Matches:      matches,
 		}

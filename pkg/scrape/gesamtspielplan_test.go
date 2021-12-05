@@ -5,13 +5,14 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/taskmedia/nuScrape/pkg/sport/championship"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
 // test func scrapeTableResultset
 func TestScrapeGesamtspielplan(t *testing.T) {
-	c := "AV"
+	c := championship.AV
 	s, _ := season.New("2021_22")
 	g, _ := group.New("281103")
 

@@ -2,6 +2,7 @@ package sport
 
 import (
 	"github.com/taskmedia/nuScrape/pkg/sport/ageCategory"
+	"github.com/taskmedia/nuScrape/pkg/sport/championship"
 	"github.com/taskmedia/nuScrape/pkg/sport/class"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
 	"github.com/taskmedia/nuScrape/pkg/sport/relay"
@@ -10,13 +11,13 @@ import (
 
 // Matches represents a slice of multiple Match structs.
 type Gesamtspielplan struct {
-	Matches      []Match                 `json:"matches" binding:"required"`
-	Season       season.Season           `json:"season" binding:"required"`
-	Championship string                  `json:"championship" binding:"required"`
-	Group        group.Group             `json:"group" binding:"required"`
-	AgeCategory  ageCategory.AgeCategory `json:"agecategory" binding:"required"`
-	Class        class.Class             `json:"class" binding:"required"`
-	Relay        relay.Relay             `json:"relay"`
+	Matches      []Match                   `json:"matches" binding:"required"`
+	Season       season.Season             `json:"season" binding:"required"`
+	Championship championship.Championship `json:"championship" binding:"required"`
+	Group        group.Group               `json:"group" binding:"required"`
+	AgeCategory  ageCategory.AgeCategory   `json:"agecategory" binding:"required"`
+	Class        class.Class               `json:"class" binding:"required"`
+	Relay        relay.Relay               `json:"relay"`
 }
 
 // func GetDistinctTeams will return a list of all teams in a Gesamtspielplan
@@ -41,7 +42,7 @@ func (gsp Gesamtspielplan) GetDistinctTeams() []string {
 // func GetDescription will return a formatted description (multi line) of the GSP (without matches)
 func (gsp Gesamtspielplan) GetDescription() string {
 	desc := ""
-	desc += "Liga: " + gsp.Championship + " - " + gsp.Class.GetName() + " " + gsp.Relay.GetName() + "\n"
+	desc += "Liga: " + gsp.Championship.GetName() + " - " + gsp.Class.GetName() + " " + gsp.Relay.GetName() + "\n"
 	desc += "Gruppennummer: " + gsp.Group.String() + "\n"
 	desc += "Altersklasse: " + gsp.AgeCategory.GetName() + "\n"
 	desc += "Saison: " + string(gsp.Season) + "\n"

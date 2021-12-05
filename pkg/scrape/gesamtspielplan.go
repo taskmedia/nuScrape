@@ -3,12 +3,13 @@ package scrape
 import (
 	"github.com/gocolly/colly"
 	log "github.com/sirupsen/logrus"
+	"github.com/taskmedia/nuScrape/pkg/sport/championship"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
 
 // GenerateGesamtspielplan will scrape Gesamtspielplan and return Gesamtspielplan Info and Table HTMLElement
-func ScrapeGesamtspielplan(s season.Season, c string, g group.Group) (*colly.HTMLElement, *colly.HTMLElement, error) {
+func ScrapeGesamtspielplan(s season.Season, c championship.Championship, g group.Group) (*colly.HTMLElement, *colly.HTMLElement, error) {
 	log.WithFields(log.Fields{
 		"season":       s,
 		"championship": c,

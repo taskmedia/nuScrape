@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/taskmedia/nuScrape/pkg/sport/championship"
 	"github.com/taskmedia/nuScrape/pkg/sport/group"
 	"github.com/taskmedia/nuScrape/pkg/sport/season"
 )
@@ -15,7 +16,7 @@ func TestGenerateUrlGesamtspielplan(t *testing.T) {
 
 	// input
 	s, _ := season.New("2021_22")
-	c := "AV"
+	c := championship.AV
 	g, _ := group.New("281103")
 
 	u := generateUrlGesamtspielplan(s, c, g)
