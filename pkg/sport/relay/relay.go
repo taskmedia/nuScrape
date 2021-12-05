@@ -60,10 +60,9 @@ func Parse(s string) (Relay, error) {
 	re := re_relayNumber.FindStringSubmatch(searchString)
 	if len(re) > 2 {
 		searchString = re[1]
-		cn, err := strconv.Atoi(re[2])
-		if err != nil {
-			return Relay{}, err
-		}
+
+		// no error will occur here because of regex
+		cn, _ := strconv.Atoi(re[2])
 		classNumber = cn
 	}
 
