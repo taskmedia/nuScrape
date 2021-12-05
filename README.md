@@ -65,7 +65,7 @@ The response will be e.g.:
         ...
     ],
     "season": "2021_22",
-    "championship": "AV",
+    "championship": "Alpenvorland",
     "group": 281103,
     "agecategory": {
         "Sex": "m",
